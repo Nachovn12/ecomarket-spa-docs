@@ -34,5 +34,8 @@ public class Usuario {
     private Boolean activo;
 
     @Column(nullable = false)
+    private Boolean eliminado;
+
+    @Column(nullable = false)
     private LocalDateTime fechaRegistro;
 }

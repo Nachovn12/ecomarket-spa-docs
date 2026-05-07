@@ -29,6 +29,7 @@ public class UsuarioService {
                 .password(request.getPassword())
                 .rol("CLIENTE")
                 .activo(true)
+                .eliminado(false)
                 .fechaRegistro(LocalDateTime.now())
                 .build();
 

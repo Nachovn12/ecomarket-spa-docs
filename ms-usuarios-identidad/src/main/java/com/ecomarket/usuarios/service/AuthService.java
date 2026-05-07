@@ -27,7 +27,7 @@ public class AuthService {
             throw new CredencialesInvalidasException("Correo o contraseña inválidos");
         }
 
-        if (!Boolean.TRUE.equals(usuario.getActivo())) {
+        if (!Boolean.TRUE.equals(usuario.getActivo()) || Boolean.TRUE.equals(usuario.getEliminado())) {
             throw new CredencialesInvalidasException("Correo o contraseña inválidos");
         }
 

@@ -2,6 +2,7 @@ package com.ecomarket.catalogo.controller;
 
 import com.ecomarket.catalogo.model.Producto;
 import com.ecomarket.catalogo.service.CatalogoService;
+import com.ecomarket.catalogo.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -17,7 +18,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/productos")
+@RequestMapping("/api/productos")
 public class ProductoController {
 
     @Autowired
@@ -37,17 +38,16 @@ public class ProductoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<Producto>> buscarPorId(@PathVariable Long id) {
-        return catalogoService.obtenerProductoPorId(id)
-                .map(producto -> ResponseEntity.ok(ensamblarResource(producto)))
-                .orElse(ResponseEntity.notFound().build());
+        Producto producto = catalogoService.obtenerProductoPorId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+        return ResponseEntity.ok(ensamblarResource(producto));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<Producto>> actualizar(@PathVariable Long id,
             @Valid @RequestBody Producto producto) {
-        if (!catalogoService.obtenerProductoPorId(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
+        catalogoService.obtenerProductoPorId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
         producto.setIdProducto(id);
         Producto actualizado = catalogoService.guardarProducto(producto);
         return ResponseEntity.ok(ensamblarResource(actualizado));
@@ -55,14 +55,12 @@ public class ProductoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        if (!catalogoService.obtenerProductoPorId(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
+        catalogoService.obtenerProductoPorId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
         catalogoService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
     }
 
-    // --- BÚSQUEDAS (HU-6) ---
     @GetMapping("/buscar")
     public ResponseEntity<CollectionModel<EntityModel<Producto>>> buscar(
             @RequestParam(required = false) String palabraClave,
@@ -92,7 +90,6 @@ public class ProductoController {
         return ResponseEntity.ok(ensamblarCollection(resultados));
     }
 
-    // --- MÉTODOS AUXILIARES PARA HATEOAS ---
     private EntityModel<Producto> ensamblarResource(Producto producto) {
         return EntityModel.of(producto,
                 linkTo(methodOn(ProductoController.class).buscarPorId(producto.getIdProducto())).withSelfRel(),

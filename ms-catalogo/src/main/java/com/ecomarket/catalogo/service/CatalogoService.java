@@ -2,8 +2,10 @@ package com.ecomarket.catalogo.service;
 
 import com.ecomarket.catalogo.model.Categoria;
 import com.ecomarket.catalogo.model.Producto;
+import com.ecomarket.catalogo.model.Resena;
 import com.ecomarket.catalogo.repository.CategoriaRepository;
 import com.ecomarket.catalogo.repository.ProductoRepository;
+import com.ecomarket.catalogo.repository.ResenaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,9 @@ public class CatalogoService {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
-    // --- LÓGICA DE PRODUCTOS (HU-49) ---
+    @Autowired
+    private ResenaRepository resenaRepository;
+
     public Producto guardarProducto(Producto producto) {
         return productoRepository.save(producto);
     }
@@ -36,7 +40,6 @@ public class CatalogoService {
         productoRepository.deleteById(id);
     }
 
-    // --- LÓGICA DE BÚSQUEDAS (HU-6) ---
     public List<Producto> buscarPorPalabraClave(String palabra) {
         return productoRepository
                 .findByNombreContainingIgnoreCaseOrDescripcionContainingIgnoreCaseOrDescripcionEcologicaContainingIgnoreCase(
@@ -55,12 +58,23 @@ public class CatalogoService {
         return productoRepository.findByDescripcionEcologicaContainingIgnoreCase(atributo);
     }
 
-    // --- LÓGICA DE CATEGORÍAS ---
     public Categoria guardarCategoria(Categoria categoria) {
         return categoriaRepository.save(categoria);
     }
 
     public List<Categoria> obtenerTodasCategorias() {
         return categoriaRepository.findAll();
+    }
+
+    public Optional<Categoria> obtenerCategoriaPorId(Long id) {
+        return categoriaRepository.findById(id);
+    }
+
+    public void eliminarCategoria(Long id) {
+        categoriaRepository.deleteById(id);
+    }
+
+    public Resena guardarResena(Resena resena) {
+        return resenaRepository.save(resena);
     }
 }

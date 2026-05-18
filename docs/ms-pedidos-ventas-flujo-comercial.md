@@ -1,4 +1,4 @@
-﻿# Flujo Comercial - MS Pedidos y Ventas
+# Flujo Comercial - MS Pedidos y Ventas
 ## EcoMarket SPA - Sprint 3
 
 > Microservicio: ms-pedidos-ventas

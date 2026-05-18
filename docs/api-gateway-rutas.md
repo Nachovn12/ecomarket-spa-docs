@@ -1,4 +1,4 @@
-﻿# EcoMarket SPA - API Gateway
+# EcoMarket SPA - API Gateway
 
 ## Objetivo
 

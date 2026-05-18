@@ -3,7 +3,7 @@
 
 > Microservicio: ms-pedidos-ventas
 > Puerto: 8084
-> Base de datos: PostgreSQL - bd_ventas
+> Base de datos: MySQL/XAMPP - bd_ventas
 > Rama: feature/sprint3-pedidos-ventas-benjamin
 
 ---

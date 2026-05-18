@@ -1,4 +1,4 @@
-﻿# Criterios académicos de calidad - EcoMarket SPA
+# Criterios académicos de calidad - EcoMarket SPA
 
 Este documento reúne los criterios mínimos que usaremos como equipo para saber cuándo una Historia de Usuario, una tarea técnica o un microservicio está listo para trabajarse y cuándo puede considerarse terminado.
 

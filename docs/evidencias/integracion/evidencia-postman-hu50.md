@@ -12,7 +12,7 @@ Esta evidencia respalda la HU-50, cuyo propósito es demostrar que las comunicac
 
 ## Contexto de la validación
 
-EcoMarket SPA utiliza una arquitectura basada en microservicios, donde cada servicio posee una responsabilidad específica y una base de datos PostgreSQL propia.
+EcoMarket SPA utiliza una arquitectura basada en microservicios, donde cada servicio posee una responsabilidad específica y una base de datos MySQL propia en XAMPP/phpMyAdmin.
 
 La comunicación externa se centraliza mediante el **API Gateway**, mientras que la comunicación entre dominios se representa mediante endpoints REST documentados y validados con Postman.
 

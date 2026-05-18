@@ -1,9 +1,9 @@
-# Flujo Comercial - MS Pedidos y Ventas
+﻿# Flujo Comercial - MS Pedidos y Ventas
 ## EcoMarket SPA - Sprint 3
 
 > Microservicio: ms-pedidos-ventas
 > Puerto: 8084
-> Base de datos: PostgreSQL - bd_ventas
+> Base de datos: MySQL/XAMPP - bd_ventas
 > Rama: feature/sprint3-pedidos-ventas-benjamin
 
 ---

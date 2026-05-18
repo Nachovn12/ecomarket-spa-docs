@@ -8,7 +8,7 @@ Validar y documentar la comunicación REST principal entre los microservicios de
 
 - API Gateway como punto central de entrada.
 - Microservicios independientes.
-- Base de datos PostgreSQL por microservicio.
+- Base de datos MySQL por microservicio en XAMPP/phpMyAdmin.
 - Comunicación REST entre servicios cuando el flujo de negocio lo requiere.
 - Validación mediante Postman.
 

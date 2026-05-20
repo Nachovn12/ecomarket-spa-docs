@@ -44,11 +44,11 @@ public class Envio {
     public void setId(Long id) { this.id = id; }
 
     public Long getPedidoId() { return pedidoId; }
+    public Long getIdPedido() { return pedidoId; } // Alias requerido por MsLogisticaEnviosApplicationTests
     public void setPedidoId(Long pedidoId) { this.pedidoId = pedidoId; }
     public void setIdPedido(Long pedidoId) { this.pedidoId = pedidoId; } // Alias requerido por LogisticaService
 
     public EstadoEnvio getEstado() { return estado; }
-    public void setStatus(EstadoEnvio estado) { this.estado = estado; } // Flexibilidad opcional
     public void setEstado(EstadoEnvio estado) { this.estado = estado; }
 
     public LocalDateTime getFechaCreacion() { return fechaCreacion; }

@@ -53,6 +53,12 @@ Base URL:
 http://localhost:8086
 ```
 
+Carpeta de capturas:
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/
+```
+
 ---
 
 # HU-27 — Configuración de tienda
@@ -86,9 +92,20 @@ POST http://localhost:8086/api/admin/tiendas
 ### Validaciones esperadas
 
 - Se crea una tienda activa.
+- Se registra `idTienda` generado automáticamente por MySQL.
 - Se registran horarios de apertura y cierre.
 - Se registran políticas locales.
-- La respuesta contiene enlaces HATEOAS.
+- Se registra `fechaCreacion`.
+- La respuesta contiene enlaces HATEOAS:
+  - `self`
+  - `tiendas`
+  - `personal`
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_admin_crear_tienda.png
+```
 
 ---
 
@@ -110,7 +127,15 @@ GET http://localhost:8086/api/admin/tiendas
 
 - Se listan las tiendas registradas.
 - La respuesta contiene `CollectionModel`.
+- La tienda creada aparece dentro de `_embedded`.
 - La respuesta incluye enlace `self`.
+- Cada tienda mantiene enlaces HATEOAS.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_admin_listar_tiendas.png
+```
 
 ---
 
@@ -131,8 +156,18 @@ GET http://localhost:8086/api/admin/tiendas/1
 ### Validaciones esperadas
 
 - Se consulta el detalle de la tienda.
+- Se muestra `idTienda`.
 - Se muestran horarios, ciudad, estado activo y políticas locales.
-- La respuesta contiene enlaces HATEOAS.
+- La respuesta contiene enlaces HATEOAS:
+  - `self`
+  - `tiendas`
+  - `personal`
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_admin_consultar_tienda.png
+```
 
 ---
 
@@ -164,9 +199,54 @@ PUT http://localhost:8086/api/admin/tiendas/1
 
 ### Validaciones esperadas
 
+- Se actualiza el nombre de la tienda.
 - Se actualizan horarios y políticas locales.
 - Se actualiza `fechaActualizacion`.
-- La respuesta contiene enlaces HATEOAS.
+- La respuesta contiene enlaces HATEOAS:
+  - `self`
+  - `tiendas`
+  - `personal`
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_admin_actualizar_tienda.png
+```
+
+---
+
+## 4.1. Consultar tienda actualizada
+
+### Método y URL
+
+```text
+GET http://localhost:8086/api/admin/tiendas/1
+```
+
+### Resultado esperado
+
+```text
+200 OK
+```
+
+### Validaciones esperadas
+
+- Se consulta nuevamente la tienda después de ejecutar el `PUT`.
+- Se confirma que el nombre fue actualizado a `EcoMarket Lastarria Actualizada`.
+- Se confirma que el horario de apertura fue actualizado a `10:00:00`.
+- Se confirma que el horario de cierre fue actualizado a `21:00:00`.
+- Se confirma que `fechaActualizacion` contiene un valor.
+- Se confirma que los cambios fueron persistidos correctamente.
+- La respuesta mantiene enlaces HATEOAS:
+  - `self`
+  - `tiendas`
+  - `personal`
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_admin_consultar_tienda_actualizada.png
+```
 
 ---
 
@@ -198,7 +278,16 @@ POST http://localhost:8086/api/admin/tiendas/1/personal
 
 - Se asigna personal a una tienda existente.
 - La asignación queda activa.
-- La respuesta contiene enlaces hacia tienda y personal.
+- Se registra `fechaAsignacion`.
+- La respuesta contiene enlaces hacia:
+  - tienda
+  - personal de tienda
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_admin_asignar_personal.png
+```
 
 ---
 
@@ -219,7 +308,16 @@ GET http://localhost:8086/api/admin/tiendas/1/personal
 ### Validaciones esperadas
 
 - Se listan las asignaciones activas de la tienda.
+- Se visualiza `idUsuarioInterno`.
+- Se visualiza `cargo`.
+- Se visualiza `idTienda`.
 - La respuesta contiene enlaces HATEOAS.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_admin_listar_personal_tienda.png
+```
 
 ---
 
@@ -254,9 +352,19 @@ POST http://localhost:8086/api/soporte/tickets
 ### Validaciones esperadas
 
 - Se crea un ticket en estado `ABIERTO`.
-- Se registra prioridad.
+- Se registra prioridad `MEDIA`.
 - Se registra correo de contacto.
-- La respuesta contiene enlaces HATEOAS.
+- Se registra `fechaCreacion`.
+- La respuesta contiene enlaces HATEOAS:
+  - `self`
+  - `tickets`
+  - `respuestas`
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_crear_ticket.png
+```
 
 ---
 
@@ -277,7 +385,15 @@ GET http://localhost:8086/api/soporte/tickets
 ### Validaciones esperadas
 
 - Se listan tickets de soporte.
+- El ticket creado aparece dentro de la colección.
 - La respuesta contiene enlace `self`.
+- Cada ticket mantiene enlaces HATEOAS.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_listar_tickets.png
+```
 
 ---
 
@@ -299,7 +415,17 @@ GET http://localhost:8086/api/soporte/tickets/1
 
 - Se consulta el detalle del ticket.
 - Se muestra estado, prioridad y datos de contacto.
-- La respuesta contiene enlaces HATEOAS.
+- Se muestra `fechaCreacion`.
+- La respuesta contiene enlaces HATEOAS:
+  - `self`
+  - `tickets`
+  - `respuestas`
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_consultar_ticket.png
+```
 
 ---
 
@@ -319,9 +445,15 @@ PATCH http://localhost:8086/api/soporte/tickets/1/estado?estado=EN_ATENCION
 
 ### Validaciones esperadas
 
-- Se actualiza el estado del ticket.
+- Se actualiza el estado del ticket a `EN_ATENCION`.
 - Se registra `fechaActualizacion`.
 - La respuesta mantiene estructura HATEOAS.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_actualizar_estado_ticket.png
+```
 
 ---
 
@@ -352,8 +484,15 @@ POST http://localhost:8086/api/soporte/tickets/1/respuestas
 ### Validaciones esperadas
 
 - Se registra una respuesta asociada al ticket.
+- Se registra `fechaRespuesta`.
 - Si el ticket estaba `ABIERTO`, pasa a `EN_ATENCION`.
-- La respuesta contiene enlaces al ticket.
+- La respuesta contiene enlaces al ticket y a sus respuestas.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_responder_ticket.png
+```
 
 ---
 
@@ -374,7 +513,15 @@ GET http://localhost:8086/api/soporte/tickets/1/respuestas
 ### Validaciones esperadas
 
 - Se listan respuestas asociadas al ticket.
+- Se visualiza el mensaje registrado.
+- Se visualiza `respondidoPor`.
 - La respuesta contiene enlaces HATEOAS.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_listar_respuestas_ticket.png
+```
 
 ---
 
@@ -408,8 +555,16 @@ POST http://localhost:8086/api/admin/monitorizacion/metricas
 ### Validaciones esperadas
 
 - Se registra una métrica de rendimiento.
+- Se registra disponibilidad `true`.
+- Se registra tiempo de respuesta.
 - No se genera alerta si está disponible y sin errores.
 - La respuesta contiene enlaces a métricas y alertas.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_monitorizacion_metrica_disponible.png
+```
 
 ---
 
@@ -441,8 +596,16 @@ POST http://localhost:8086/api/admin/monitorizacion/metricas
 ### Validaciones esperadas
 
 - Se registra una métrica con fallo.
+- Se registra disponibilidad `false`.
+- Se registran errores detectados.
 - El sistema genera una alerta automáticamente.
 - La alerta queda activa como `resuelta=false`.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_monitorizacion_metrica_fallo.png
+```
 
 ---
 
@@ -463,7 +626,16 @@ GET http://localhost:8086/api/admin/monitorizacion/metricas
 ### Validaciones esperadas
 
 - Se listan métricas registradas.
-- Se visualiza disponibilidad, tiempo de respuesta y errores.
+- Se visualiza disponibilidad.
+- Se visualiza tiempo de respuesta.
+- Se visualizan errores detectados.
+- La respuesta contiene enlaces HATEOAS.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_monitorizacion_listar_metricas.png
+```
 
 ---
 
@@ -495,7 +667,14 @@ POST http://localhost:8086/api/admin/monitorizacion/alertas
 
 - Se registra alerta activa.
 - Se guarda fecha de generación.
+- La alerta queda como `resuelta=false`.
 - La respuesta contiene enlace para resolver alerta.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_monitorizacion_registrar_alerta.png
+```
 
 ---
 
@@ -518,6 +697,13 @@ GET http://localhost:8086/api/admin/monitorizacion/alertas
 - Se muestran alertas no resueltas.
 - Se visualiza el historial de eventos activos.
 - La respuesta contiene enlaces HATEOAS.
+- Se incluyen alertas generadas automáticamente y/o manualmente.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_monitorizacion_listar_alertas.png
+```
 
 ---
 
@@ -539,7 +725,14 @@ PATCH http://localhost:8086/api/admin/monitorizacion/alertas/1/resolver
 
 - Se marca la alerta como resuelta.
 - Se registra `fechaResolucion`.
-- La alerta deja de aparecer como activa.
+- La alerta deja de aparecer como activa si se consulta nuevamente.
+- La respuesta mantiene enlaces HATEOAS.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_monitorizacion_resolver_alerta.png
+```
 
 ---
 
@@ -574,7 +767,17 @@ POST http://localhost:8086/api/admin/respaldos
 
 - Se programa un respaldo.
 - Estado inicial: `PROGRAMADO`.
-- Se registra origen, frecuencia, responsable y fecha programada.
+- Se registra origen de datos.
+- Se registra frecuencia.
+- Se registra responsable.
+- Se registra fecha programada.
+- La respuesta contiene enlaces HATEOAS.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_respaldo_programar.png
+```
 
 ---
 
@@ -596,6 +799,13 @@ GET http://localhost:8086/api/admin/respaldos
 
 - Se listan respaldos registrados.
 - Se muestran estados y resultados.
+- La respuesta contiene enlaces HATEOAS.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_respaldo_listar.png
+```
 
 ---
 
@@ -618,6 +828,13 @@ PATCH http://localhost:8086/api/admin/respaldos/1/ejecutar
 - El respaldo cambia a estado `EJECUTADO`.
 - Se registra `fechaEjecucion`.
 - Se actualiza el resultado.
+- La respuesta contiene enlaces HATEOAS.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_respaldo_ejecutar.png
+```
 
 ---
 
@@ -640,6 +857,13 @@ PATCH http://localhost:8086/api/admin/respaldos/1/restaurar
 - Solo se puede restaurar un respaldo ejecutado.
 - El respaldo cambia a estado `RESTAURADO`.
 - Se registra `fechaRestauracion`.
+- La respuesta contiene enlaces HATEOAS.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_respaldo_restaurar.png
+```
 
 ---
 
@@ -647,11 +871,13 @@ PATCH http://localhost:8086/api/admin/respaldos/1/restaurar
 
 ## Error por horario inválido
 
+### Método y URL
+
 ```text
 POST http://localhost:8086/api/admin/tiendas
 ```
 
-Body:
+### Body
 
 ```json
 {
@@ -663,21 +889,35 @@ Body:
 }
 ```
 
-Resultado esperado:
+### Resultado esperado
 
 ```text
 400 Bad Request
+```
+
+### Validaciones esperadas
+
+- El sistema rechaza horarios inválidos.
+- El horario de apertura no puede ser posterior al horario de cierre.
+- La respuesta se entrega mediante `GlobalExceptionHandler`.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_admin_error_horario_invalido.png
 ```
 
 ---
 
 ## Error por email inválido
 
+### Método y URL
+
 ```text
 POST http://localhost:8086/api/soporte/tickets
 ```
 
-Body:
+### Body
 
 ```json
 {
@@ -689,24 +929,50 @@ Body:
 }
 ```
 
-Resultado esperado:
+### Resultado esperado
 
 ```text
 400 Bad Request
+```
+
+### Validaciones esperadas
+
+- El sistema rechaza correos con formato inválido.
+- Se activa validación `@Email`.
+- La respuesta se entrega mediante `GlobalExceptionHandler`.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_error_email_invalido.png
 ```
 
 ---
 
 ## Error por enum inválido
 
+### Método y URL
+
 ```text
 PATCH http://localhost:8086/api/soporte/tickets/1/estado?estado=NO_EXISTE
 ```
 
-Resultado esperado:
+### Resultado esperado
 
 ```text
 400 Bad Request
+```
+
+### Validaciones esperadas
+
+- El sistema rechaza estados que no pertenezcan al enum `EstadoTicket`.
+- La respuesta se entrega mediante `GlobalExceptionHandler`.
+- Se informa que el parámetro posee un valor inválido.
+
+### Evidencia asociada
+
+```text
+docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_error_enum_invalido.png
 ```
 
 ---
@@ -779,21 +1045,37 @@ H2 en memoria
 Guardar capturas en:
 
 ```text
-docs/evidencias-defensa/capturas/
+docs/evidencias-defensa/capturas/admin-soporte/
 ```
 
-| Evidencia          | Archivo sugerido                       |
-| ------------------ | -------------------------------------- |
-| Crear tienda       | `postman_admin_crear_tienda.png`       |
-| Listar tiendas     | `postman_admin_listar_tiendas.png`     |
-| Crear ticket       | `postman_soporte_crear_ticket.png`     |
-| Responder ticket   | `postman_soporte_responder_ticket.png` |
-| Registrar métrica  | `postman_monitorizacion_metrica.png`   |
-| Generar alerta     | `postman_monitorizacion_alerta.png`    |
-| Programar respaldo | `postman_respaldo_programar.png`       |
-| Ejecutar respaldo  | `postman_respaldo_ejecutar.png`        |
-| Restaurar respaldo | `postman_respaldo_restaurar.png`       |
-| Error validación   | `postman_admin_error_validacion.png`   |
+| Evidencia                    | Archivo sugerido                                 |
+| ---------------------------- | ------------------------------------------------ |
+| Crear tienda                 | `postman_admin_crear_tienda.png`                 |
+| Listar tiendas               | `postman_admin_listar_tiendas.png`               |
+| Consultar tienda             | `postman_admin_consultar_tienda.png`             |
+| Actualizar tienda            | `postman_admin_actualizar_tienda.png`            |
+| Consultar tienda actualizada | `postman_admin_consultar_tienda_actualizada.png` |
+| Asignar personal             | `postman_admin_asignar_personal.png`             |
+| Listar personal por tienda   | `postman_admin_listar_personal_tienda.png`       |
+| Crear ticket                 | `postman_soporte_crear_ticket.png`               |
+| Listar tickets               | `postman_soporte_listar_tickets.png`             |
+| Consultar ticket             | `postman_soporte_consultar_ticket.png`           |
+| Actualizar estado ticket     | `postman_soporte_actualizar_estado_ticket.png`   |
+| Responder ticket             | `postman_soporte_responder_ticket.png`           |
+| Listar respuestas del ticket | `postman_soporte_listar_respuestas_ticket.png`   |
+| Registrar métrica disponible | `postman_monitorizacion_metrica_disponible.png`  |
+| Registrar métrica con fallo  | `postman_monitorizacion_metrica_fallo.png`       |
+| Listar métricas              | `postman_monitorizacion_listar_metricas.png`     |
+| Registrar alerta manual      | `postman_monitorizacion_registrar_alerta.png`    |
+| Listar alertas activas       | `postman_monitorizacion_listar_alertas.png`      |
+| Resolver alerta              | `postman_monitorizacion_resolver_alerta.png`     |
+| Programar respaldo           | `postman_respaldo_programar.png`                 |
+| Listar respaldos             | `postman_respaldo_listar.png`                    |
+| Ejecutar respaldo            | `postman_respaldo_ejecutar.png`                  |
+| Restaurar respaldo           | `postman_respaldo_restaurar.png`                 |
+| Error horario inválido       | `postman_admin_error_horario_invalido.png`       |
+| Error email inválido         | `postman_soporte_error_email_invalido.png`       |
+| Error enum inválido          | `postman_soporte_error_enum_invalido.png`        |
 
 ---
 
@@ -812,3 +1094,4 @@ Las pruebas en Postman deben demostrar que el MS Administración y Soporte cumpl
 - Validaciones.
 - HATEOAS.
 - Manejo global de errores.
+- Persistencia en MySQL/XAMPP.

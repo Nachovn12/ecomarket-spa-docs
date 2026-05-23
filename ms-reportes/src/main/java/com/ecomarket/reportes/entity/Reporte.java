@@ -1,6 +1,7 @@
 package com.ecomarket.reportes.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -12,10 +13,12 @@ public class Reporte {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "El tipo de reporte es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TipoReporte tipo;
 
+    @Positive(message = "El id de tienda debe ser positivo")
     private Long idTienda;
 
     private LocalDate fechaInicio;
@@ -25,6 +28,7 @@ public class Reporte {
     @Enumerated(EnumType.STRING)
     private FormatoExportacion formatoExportacion;
 
+    @Size(max = 100, message = "El usuario generador no puede superar los 100 caracteres")
     private String generadoPor;
 
     private LocalDateTime fechaGeneracion;

@@ -1,9 +1,13 @@
 package com.ecomarket.reportes;
 
 import com.ecomarket.reportes.entity.IndicadorKPI;
+import com.ecomarket.reportes.entity.Reporte;
 import com.ecomarket.reportes.entity.TipoKPI;
+import com.ecomarket.reportes.entity.TipoReporte;
+import com.ecomarket.reportes.exception.ReporteException;
 import com.ecomarket.reportes.repository.IndicadorKPIRepository;
 import com.ecomarket.reportes.repository.ReporteRepository;
+import com.ecomarket.reportes.service.ReporteService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +32,9 @@ class MsReportesApplicationTests {
     @Autowired
     private IndicadorKPIRepository indicadorKPIRepository;
 
+    @Autowired
+    private ReporteService reporteService;
+
     @Test
     void contextLoads() {
     }
@@ -46,6 +53,18 @@ class MsReportesApplicationTests {
     }
 
     @Test
+    void testCrearReporteVentas() {
+        Reporte reporte = new Reporte();
+        reporte.setTipo(TipoReporte.VENTAS);
+        reporte.setIdTienda(1L);
+
+        Reporte guardado = reporteRepository.save(reporte);
+
+        assertNotNull(guardado.getId());
+        assertEquals(TipoReporte.VENTAS, guardado.getTipo());
+    }
+
+    @Test
     void testListarReportes() {
         long count = reporteRepository.count();
         assertTrue(count >= 0);
@@ -61,5 +80,25 @@ class MsReportesApplicationTests {
 
         var resultado = indicadorKPIRepository.findByTipo(TipoKPI.STOCK_BAJO);
         assertFalse(resultado.isEmpty());
+    }
+
+    @Test
+    void testListarKpisPorTipo() {
+        IndicadorKPI kpi = new IndicadorKPI();
+        kpi.setTipo(TipoKPI.RENDIMIENTO_TIENDA);
+        kpi.setValor(85.0);
+        kpi.setDescripcion("Rendimiento tienda");
+        indicadorKPIRepository.save(kpi);
+
+        var resultado = indicadorKPIRepository.findByTipo(TipoKPI.RENDIMIENTO_TIENDA);
+        assertFalse(resultado.isEmpty());
+        assertEquals(TipoKPI.RENDIMIENTO_TIENDA, resultado.get(0).getTipo());
+    }
+
+    @Test
+    void testObtenerReporteInexistenteLanzaExcepcion() {
+        assertThrows(ReporteException.class, () -> {
+            reporteService.obtenerReportePorId(999999L);
+        });
     }
 }

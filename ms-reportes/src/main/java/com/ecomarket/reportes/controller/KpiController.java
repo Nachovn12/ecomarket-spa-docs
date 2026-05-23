@@ -9,6 +9,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class KpiController {
     }
 
     @PostMapping
-    public ResponseEntity<EntityModel<IndicadorKPIResponseDTO>> crearKPI(@RequestBody IndicadorKPI kpi) {
+    public ResponseEntity<EntityModel<IndicadorKPIResponseDTO>> crearKPI(@Valid @RequestBody IndicadorKPI kpi) {
         IndicadorKPI creado = reporteService.crearKPI(kpi);
         IndicadorKPIResponseDTO dto = reporteService.toDTO(creado);
         EntityModel<IndicadorKPIResponseDTO> model = EntityModel.of(dto,

@@ -30,9 +30,14 @@ public class ReporteService {
         this.indicadorKPIRepository = indicadorKPIRepository;
     }
 
-    // -------------------------------------------------------------------------
-    // Reporte CRUD
-    // -------------------------------------------------------------------------
+    private void validarRangoFechas(ReporteFiltroRequestDTO filtro) {
+        if (filtro.getFechaInicio() == null || filtro.getFechaFin() == null) {
+            throw new ReporteException("Las fechas de inicio y fin son obligatorias");
+        }
+        if (filtro.getFechaInicio().isAfter(filtro.getFechaFin())) {
+            throw new ReporteException("La fecha de inicio no puede ser posterior a la fecha de fin");
+        }
+    }
 
     @Transactional(readOnly = true)
     public List<Reporte> listarReportes() {
@@ -66,11 +71,9 @@ public class ReporteService {
         return reporteRepository.findByIdTienda(idTienda);
     }
 
-    // -------------------------------------------------------------------------
-    // Generación de reportes especializados
-    // -------------------------------------------------------------------------
-
     public ReporteVentasDTO generarReporteVentas(ReporteFiltroRequestDTO filtro) {
+        validarRangoFechas(filtro);
+
         Reporte reporte = new Reporte();
         reporte.setTipo(TipoReporte.VENTAS);
         reporte.setIdTienda(filtro.getIdTienda());
@@ -78,6 +81,10 @@ public class ReporteService {
         reporte.setFechaFin(filtro.getFechaFin());
         reporteRepository.save(reporte);
 
+        // Nota académica Sprint 4:
+        // Los cálculos se basan en datos internos de IndicadorKPI.
+        // La integración real con MS Ventas, MS Inventario y MS Administración
+        // queda representada de forma simulada para esta entrega.
         List<IndicadorKPI> kpisVentas = indicadorKPIRepository.findByTipo(TipoKPI.VENTAS_TOTALES);
         double totalVentas = kpisVentas.stream().mapToDouble(IndicadorKPI::getValor).sum();
 
@@ -97,6 +104,9 @@ public class ReporteService {
         reporte.setIdTienda(idTienda);
         reporteRepository.save(reporte);
 
+        // Nota académica Sprint 4:
+        // Los cálculos se basan en datos internos de IndicadorKPI.
+        // La integración real con MS Inventario queda simulada para esta entrega.
         List<IndicadorKPI> kpisBajoStock = indicadorKPIRepository.findByTipo(TipoKPI.STOCK_BAJO);
         List<IndicadorKPI> kpisRotacion = indicadorKPIRepository.findByTipo(TipoKPI.ROTACION_INVENTARIO);
 
@@ -109,6 +119,8 @@ public class ReporteService {
     }
 
     public ReporteRendimientoDTO generarReporteRendimiento(ReporteFiltroRequestDTO filtro) {
+        validarRangoFechas(filtro);
+
         Reporte reporte = new Reporte();
         reporte.setTipo(TipoReporte.RENDIMIENTO_TIENDA);
         reporte.setIdTienda(filtro.getIdTienda());
@@ -116,6 +128,9 @@ public class ReporteService {
         reporte.setFechaFin(filtro.getFechaFin());
         reporteRepository.save(reporte);
 
+        // Nota académica Sprint 4:
+        // Los cálculos se basan en datos internos de IndicadorKPI.
+        // La integración real con MS Administración queda simulada para esta entrega.
         List<IndicadorKPI> kpisVentas = indicadorKPIRepository.findByTipo(TipoKPI.VENTAS_TOTALES);
         List<IndicadorKPI> kpisPedidos = indicadorKPIRepository.findByTipo(TipoKPI.PEDIDOS_ENTREGADOS);
         List<IndicadorKPI> kpisBajoStock = indicadorKPIRepository.findByTipo(TipoKPI.STOCK_BAJO);
@@ -134,10 +149,6 @@ public class ReporteService {
         dto.setRendimientoOperativo(rendimiento);
         return dto;
     }
-
-    // -------------------------------------------------------------------------
-    // IndicadorKPI CRUD
-    // -------------------------------------------------------------------------
 
     @Transactional(readOnly = true)
     public List<IndicadorKPI> listarKPIs() {
@@ -165,10 +176,6 @@ public class ReporteService {
     public List<IndicadorKPI> listarKPIsPorTipo(TipoKPI tipo) {
         return indicadorKPIRepository.findByTipo(tipo);
     }
-
-    // -------------------------------------------------------------------------
-    // Conversor entidad → DTO
-    // -------------------------------------------------------------------------
 
     public IndicadorKPIResponseDTO toDTO(IndicadorKPI kpi) {
         IndicadorKPIResponseDTO dto = new IndicadorKPIResponseDTO();

@@ -1,9 +1,8 @@
 package com.ecomarket.logistica.model.enums;
 
 public enum EstadoEnvio {
-    PENDIENTE,
-    PREPARACION,
-    EN_TRANSITO,
+    PREPARADO,
+    EN_CAMINO,
     ENTREGADO,
-    CANCELADO
+    CON_INCIDENCIA
 }

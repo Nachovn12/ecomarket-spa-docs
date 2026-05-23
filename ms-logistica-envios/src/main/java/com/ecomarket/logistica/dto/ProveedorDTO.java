@@ -1,55 +1,20 @@
-package com.ecomarket.logistica.model;
+package com.ecomarket.logistica.dto;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "proveedores")
-public class Proveedor {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ProveedorDTO {
     private Long id;
-
-    @NotBlank(message = "La razón social es obligatoria")
-    @Column(nullable = false)
     private String razonSocial;
-
-    @NotBlank(message = "El RUT es obligatorio")
-    @Column(nullable = false, unique = true)
     private String rut;
-
     private String contacto;
-
-    @Email(message = "El email debe tener formato válido")
     private String email;
-
     private String telefono;
-
-    @NotBlank(message = "El tipo de proveedor es obligatorio")
-    @Column(nullable = false)
     private String tipoProveedor;
-
-    @NotBlank(message = "La cobertura es obligatoria")
-    @Column(nullable = false)
     private String cobertura;
-
-    @Column(nullable = false)
-    private Boolean activo = true;
-
+    private Boolean activo;
     private LocalDateTime fechaRegistro;
 
-    public Proveedor() {}
-
-    @PrePersist
-    protected void onCreate() {
-        this.fechaRegistro = LocalDateTime.now();
-        if (this.activo == null) {
-            this.activo = true;
-        }
-    }
+    public ProveedorDTO() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

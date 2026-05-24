@@ -47,11 +47,11 @@ Esto permite:
 Ejemplo de consumo mediante Gateway:
 
 ```txt
-http://localhost:8080/productos
-http://localhost:8080/inventario
-http://localhost:8080/pedidos
-http://localhost:8080/envios
-http://localhost:8080/reportes
+http://localhost:8081/productos
+http://localhost:8081/inventario
+http://localhost:8081/pedidos
+http://localhost:8081/envios
+http://localhost:8081/reportes
 ```
 
 ---
@@ -97,7 +97,7 @@ GET /stock?idProducto=1&idTienda=1
 ## Request mediante API Gateway
 
 ```http
-GET http://localhost:8080/stock?idProducto=1&idTienda=1
+GET http://localhost:8081/stock?idProducto=1&idTienda=1
 ```
 
 ## Response esperado
@@ -149,7 +149,7 @@ POST /envios
 ## Request mediante API Gateway
 
 ```http
-POST http://localhost:8080/envios
+POST http://localhost:8081/envios
 Content-Type: application/json
 ```
 
@@ -212,8 +212,8 @@ GET /pedidos
 ## Request mediante API Gateway
 
 ```http
-GET http://localhost:8080/ventas
-GET http://localhost:8080/pedidos
+GET http://localhost:8081/ventas
+GET http://localhost:8081/pedidos
 ```
 
 ## Response esperado
@@ -268,8 +268,8 @@ GET /stock
 ## Request mediante API Gateway
 
 ```http
-GET http://localhost:8080/inventario
-GET http://localhost:8080/stock
+GET http://localhost:8081/inventario
+GET http://localhost:8081/stock
 ```
 
 ## Response esperado
@@ -324,8 +324,8 @@ GET /soporte/tickets
 ## Request mediante API Gateway
 
 ```http
-GET http://localhost:8080/admin/tiendas
-GET http://localhost:8080/soporte/tickets
+GET http://localhost:8081/admin/tiendas
+GET http://localhost:8081/soporte/tickets
 ```
 
 ## Response esperado
@@ -364,15 +364,15 @@ El ambiente local debe considerar:
 
 | Variable | Valor recomendado |
 |---|---|
-| base_url | http://localhost:8080 |
-| api_gateway_port | 8080 |
-| ms_usuarios_port | 8081 |
-| ms_catalogo_port | 8082 |
-| ms_inventario_port | 8083 |
-| ms_pedidos_port | 8084 |
-| ms_logistica_port | 8085 |
-| ms_admin_port | 8086 |
-| ms_reportes_port | 8087 |
+| base_url | http://localhost:$value |
+| api_gateway_port | 8081 |
+| ms_usuarios_port | 8083 |
+| ms_catalogo_port | 8084 |
+| ms_inventario_port | 8085 |
+| ms_pedidos_port | 8086 |
+| ms_logistica_port | 8087 |
+| ms_admin_port | 8088 |
+| ms_reportes_port | 8089 |
 
 ---
 
@@ -470,7 +470,7 @@ cd ms-reportes
 Después probar las rutas desde Postman usando:
 
 ```txt
-http://localhost:8080
+http://localhost:8081
 ```
 
 ---

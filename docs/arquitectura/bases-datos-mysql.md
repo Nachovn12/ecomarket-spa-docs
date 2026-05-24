@@ -2,12 +2,14 @@
 
 ## Proyecto
 
-**EcoMarket SPA**
-**Asignatura:** Desarrollo Full Stack I — DSY1103
-**Sección:** 003D
-**Entrega:** EP2 | Entrega de Encargo grupal Parte 1
-**Arquitectura:** Microservicios independientes con API Gateway
-**Motor de base de datos:** MySQL
+| Campo | Detalle |
+| --- | --- |
+| Proyecto | EcoMarket SPA |
+| Asignatura | Desarrollo Full Stack I — DSY1103 |
+| Sección | 003D |
+| Entrega | EP2, Entrega de Encargo grupal Parte 1 |
+| Arquitectura | Microservicios independientes con API Gateway |
+| Motor de base de datos | MySQL |
 
 ---
 
@@ -37,13 +39,13 @@ La comunicación entre microservicios debe realizarse mediante servicios REST y 
 
 | Microservicio                  | Base de datos MySQL       | Responsabilidad                                                   |
 | ------------------------------ | ------------------------- | ----------------------------------------------------------------- |
-| MS Usuarios e Identidad        | `ecomarket_usuarios_db`   | Login, registro, roles, permisos y usuarios internos              |
-| MS Catálogo                    | `ecomarket_catalogo_db`   | Productos, categorías, reseñas, búsqueda y atributos ecológicos   |
-| MS Inventario y Abastecimiento | `ecomarket_inventario_db` | Stock, reservas, movimientos, alertas y reabastecimiento          |
-| MS Pedidos y Ventas            | `ecomarket_ventas_db`     | Carrito, pedidos, ventas, pagos, facturas, cupones y devoluciones |
-| MS Logística de Envíos         | `ecomarket_logistica_db`  | Envíos, rutas, proveedores, seguimiento y reabastecimiento        |
-| MS Administración y Soporte    | `ecomarket_admin_db`      | Tiendas, tickets, alertas, métricas y respaldos                   |
-| MS Reportes                    | `ecomarket_reportes_db`   | Reportes, KPIs, exportaciones y auditoría                         |
+| MS Usuarios e Identidad        | `bd_usuarios`   | Login, registro, roles, permisos y usuarios internos              |
+| MS Catálogo                    | `bd_catalogo`   | Productos, categorías, reseñas, búsqueda y atributos ecológicos   |
+| MS Inventario y Abastecimiento | `bd_inventario` | Stock, reservas, movimientos, alertas y reabastecimiento          |
+| MS Pedidos y Ventas            | `bd_ventas`     | Carrito, pedidos, ventas, pagos, facturas, cupones y devoluciones |
+| MS Logística de Envíos         | `bd_logistica`  | Envíos, rutas, proveedores, seguimiento y reabastecimiento        |
+| MS Administración y Soporte    | `bd_admin`      | Tiendas, tickets, alertas, métricas y respaldos                   |
+| MS Reportes                    | `bd_reportes`   | Reportes, KPIs, exportaciones y auditoría                         |
 | API Gateway                    | No aplica                 | Enrutamiento REST y punto único de entrada                        |
 
 ---
@@ -53,31 +55,31 @@ La comunicación entre microservicios debe realizarse mediante servicios REST y 
 Ejecutar el siguiente script en MySQL Workbench, phpMyAdmin o consola MySQL:
 
 ```sql
-CREATE DATABASE IF NOT EXISTS ecomarket_usuarios_db
+CREATE DATABASE IF NOT EXISTS bd_usuarios
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
-CREATE DATABASE IF NOT EXISTS ecomarket_catalogo_db
+CREATE DATABASE IF NOT EXISTS bd_catalogo
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
-CREATE DATABASE IF NOT EXISTS ecomarket_inventario_db
+CREATE DATABASE IF NOT EXISTS bd_inventario
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
-CREATE DATABASE IF NOT EXISTS ecomarket_ventas_db
+CREATE DATABASE IF NOT EXISTS bd_ventas
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
-CREATE DATABASE IF NOT EXISTS ecomarket_logistica_db
+CREATE DATABASE IF NOT EXISTS bd_logistica
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
-CREATE DATABASE IF NOT EXISTS ecomarket_admin_db
+CREATE DATABASE IF NOT EXISTS bd_admin
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
-CREATE DATABASE IF NOT EXISTS ecomarket_reportes_db
+CREATE DATABASE IF NOT EXISTS bd_reportes
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 ```
@@ -114,7 +116,7 @@ La propiedad `spring.datasource.password` puede variar según la configuración 
 ### MS Usuarios e Identidad
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/ecomarket_usuarios_db
+spring.datasource.url=jdbc:mysql://localhost:3306/bd_usuarios
 spring.datasource.username=root
 spring.datasource.password=
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
@@ -123,7 +125,7 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 ### MS Catálogo
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/ecomarket_catalogo_db
+spring.datasource.url=jdbc:mysql://localhost:3306/bd_catalogo
 spring.datasource.username=root
 spring.datasource.password=
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
@@ -132,7 +134,7 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 ### MS Inventario y Abastecimiento
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/ecomarket_inventario_db
+spring.datasource.url=jdbc:mysql://localhost:3306/bd_inventario
 spring.datasource.username=root
 spring.datasource.password=
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
@@ -141,7 +143,7 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 ### MS Pedidos y Ventas
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/ecomarket_ventas_db
+spring.datasource.url=jdbc:mysql://localhost:3306/bd_ventas
 spring.datasource.username=root
 spring.datasource.password=
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
@@ -150,7 +152,7 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 ### MS Logística de Envíos
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/ecomarket_logistica_db
+spring.datasource.url=jdbc:mysql://localhost:3306/bd_logistica
 spring.datasource.username=root
 spring.datasource.password=
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
@@ -159,7 +161,7 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 ### MS Administración y Soporte
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/ecomarket_admin_db
+spring.datasource.url=jdbc:mysql://localhost:3306/bd_admin
 spring.datasource.username=root
 spring.datasource.password=
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
@@ -168,7 +170,7 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 ### MS Reportes
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/ecomarket_reportes_db
+spring.datasource.url=jdbc:mysql://localhost:3306/bd_reportes
 spring.datasource.username=root
 spring.datasource.password=
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
@@ -296,16 +298,16 @@ Apache es opcional y solo se requiere si se utiliza phpMyAdmin para administrar 
 
 ## 12. Puertos sugeridos por microservicio
 
-| Componente                     | Puerto sugerido |
-| ------------------------------ | --------------: |
-| API Gateway                    |            8080 |
-| MS Usuarios e Identidad        |            8081 |
-| MS Catálogo                    |            8082 |
-| MS Inventario y Abastecimiento |            8083 |
-| MS Pedidos y Ventas            |            8084 |
-| MS Logística de Envíos         |            8085 |
-| MS Administración y Soporte    |            8086 |
-| MS Reportes                    |            8087 |
+| Componente | Puerto configurado |
+|---|---:|
+| API Gateway | 8081 |
+| MS Usuarios e Identidad | 8083 |
+| MS Catálogo | 8084 |
+| MS Inventario y Abastecimiento | 8085 |
+| MS Pedidos y Ventas | 8086 |
+| MS Logística de Envíos | 8087 |
+| MS Administración y Soporte | 8088 |
+| MS Reportes | 8089 |
 
 Los puertos pueden variar según la configuración final del archivo `application.properties` de cada microservicio.
 

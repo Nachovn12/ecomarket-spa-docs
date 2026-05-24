@@ -129,13 +129,13 @@ GET /productos/1
   "descripcionEcologica": "Biodegradable y libre de plástico",
   "_links": {
     "self": {
-      "href": "http://localhost:8080/productos/1"
+      "href": "http://localhost:8081/productos/1"
     },
     "productos": {
-      "href": "http://localhost:8080/productos"
+      "href": "http://localhost:8081/productos"
     },
     "categorias": {
-      "href": "http://localhost:8080/categorias"
+      "href": "http://localhost:8081/categorias"
     }
   }
 }
@@ -184,7 +184,7 @@ GET /productos
         "precio": 4990,
         "_links": {
           "self": {
-            "href": "http://localhost:8080/productos/1"
+            "href": "http://localhost:8081/productos/1"
           }
         }
       }
@@ -192,7 +192,7 @@ GET /productos
   },
   "_links": {
     "self": {
-      "href": "http://localhost:8080/productos"
+      "href": "http://localhost:8081/productos"
     }
   }
 }
@@ -253,13 +253,13 @@ GET /categorias
   "nombre": "Shampoo sólido ecológico",
   "_links": {
     "self": {
-      "href": "http://localhost:8080/productos/1"
+      "href": "http://localhost:8081/productos/1"
     },
     "productos": {
-      "href": "http://localhost:8080/productos"
+      "href": "http://localhost:8081/productos"
     },
     "resenas": {
-      "href": "http://localhost:8080/productos/1/resenas"
+      "href": "http://localhost:8081/productos/1/resenas"
     }
   }
 }
@@ -297,13 +297,13 @@ POST /stock/reservas
   "stockReservado": 0,
   "_links": {
     "self": {
-      "href": "http://localhost:8080/inventario/1"
+      "href": "http://localhost:8081/inventario/1"
     },
     "stock": {
-      "href": "http://localhost:8080/stock?idProducto=1&idTienda=1"
+      "href": "http://localhost:8081/stock?idProducto=1&idTienda=1"
     },
     "reservas": {
-      "href": "http://localhost:8080/stock/reservas"
+      "href": "http://localhost:8081/stock/reservas"
     }
   }
 }
@@ -344,19 +344,19 @@ POST /ventas/facturas
   "total": 24990,
   "_links": {
     "self": {
-      "href": "http://localhost:8080/pedidos/1"
+      "href": "http://localhost:8081/pedidos/1"
     },
     "pedidos": {
-      "href": "http://localhost:8080/pedidos"
+      "href": "http://localhost:8081/pedidos"
     },
     "pago": {
-      "href": "http://localhost:8080/ventas/pagos"
+      "href": "http://localhost:8081/ventas/pagos"
     },
     "factura": {
-      "href": "http://localhost:8080/ventas/facturas"
+      "href": "http://localhost:8081/ventas/facturas"
     },
     "envio": {
-      "href": "http://localhost:8080/envios"
+      "href": "http://localhost:8081/envios"
     }
   }
 }
@@ -394,13 +394,13 @@ GET /rutas
   "direccionDestino": "Barrio Lastarria, Santiago",
   "_links": {
     "self": {
-      "href": "http://localhost:8080/envios/1"
+      "href": "http://localhost:8081/envios/1"
     },
     "seguimiento": {
-      "href": "http://localhost:8080/envios/1/seguimiento"
+      "href": "http://localhost:8081/envios/1/seguimiento"
     },
     "rutas": {
-      "href": "http://localhost:8080/rutas"
+      "href": "http://localhost:8081/rutas"
     }
   }
 }
@@ -438,13 +438,13 @@ POST /soporte/tickets
   "estado": "ABIERTO",
   "_links": {
     "self": {
-      "href": "http://localhost:8080/soporte/tickets/1"
+      "href": "http://localhost:8081/soporte/tickets/1"
     },
     "tickets": {
-      "href": "http://localhost:8080/soporte/tickets"
+      "href": "http://localhost:8081/soporte/tickets"
     },
     "respuestas": {
-      "href": "http://localhost:8080/soporte/tickets/1/respuestas"
+      "href": "http://localhost:8081/soporte/tickets/1/respuestas"
     }
   }
 }
@@ -481,13 +481,13 @@ POST /reportes/{idReporte}/exportaciones
   "estado": "GENERADO",
   "_links": {
     "self": {
-      "href": "http://localhost:8080/reportes/1"
+      "href": "http://localhost:8081/reportes/1"
     },
     "exportaciones": {
-      "href": "http://localhost:8080/reportes/1/exportaciones"
+      "href": "http://localhost:8081/reportes/1/exportaciones"
     },
     "kpi": {
-      "href": "http://localhost:8080/kpi"
+      "href": "http://localhost:8081/kpi"
     }
   }
 }
@@ -508,7 +508,7 @@ Ejemplo mínimo:
 ```json
 "_links": {
   "self": {
-    "href": "http://localhost:8080/productos/1"
+    "href": "http://localhost:8081/productos/1"
   }
 }
 ```
@@ -518,13 +518,13 @@ Ejemplo más completo:
 ```json
 "_links": {
   "self": {
-    "href": "http://localhost:8080/productos/1"
+    "href": "http://localhost:8081/productos/1"
   },
   "productos": {
-    "href": "http://localhost:8080/productos"
+    "href": "http://localhost:8081/productos"
   },
   "categorias": {
-    "href": "http://localhost:8080/categorias"
+    "href": "http://localhost:8081/categorias"
   }
 }
 ```
@@ -550,17 +550,17 @@ Ejemplo más completo:
 Las rutas deben validarse idealmente mediante el API Gateway:
 
 ```txt
-http://localhost:8080
+http://localhost:8081
 ```
 
 Ejemplos:
 
 ```http
-GET http://localhost:8080/productos
-GET http://localhost:8080/inventario
-GET http://localhost:8080/pedidos
-GET http://localhost:8080/envios
-GET http://localhost:8080/reportes
+GET http://localhost:8081/productos
+GET http://localhost:8081/inventario
+GET http://localhost:8081/pedidos
+GET http://localhost:8081/envios
+GET http://localhost:8081/reportes
 ```
 
 Esto permite comprobar que el cliente REST consume una entrada unificada y que cada microservicio mantiene sus propias rutas internas.

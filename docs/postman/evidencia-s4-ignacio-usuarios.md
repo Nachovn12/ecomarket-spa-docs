@@ -23,7 +23,7 @@ Validar que un Cliente Web pueda consultar y actualizar su perfil, incluyendo in
 ### Endpoint
 
 - Método: POST
-- URL: http://localhost:8081/api/usuarios/registro
+- URL: http://localhost:8083/api/usuarios/registro
 
 ### Body
 
@@ -55,7 +55,7 @@ Validar que un Cliente Web pueda consultar y actualizar su perfil, incluyendo in
 ### Endpoint
 
 - Método: GET
-- URL: http://localhost:8081/api/usuarios/clientes/1/perfil
+- URL: http://localhost:8083/api/usuarios/clientes/1/perfil
 
 ### Body
 
@@ -90,7 +90,7 @@ No aplica.
 ### Endpoint
 
 - Método: PUT
-- URL: http://localhost:8081/api/usuarios/clientes/1/perfil
+- URL: http://localhost:8083/api/usuarios/clientes/1/perfil
 
 ### Body
 
@@ -125,7 +125,7 @@ No aplica.
 ### Endpoint
 
 - Método: PUT
-- URL: http://localhost:8081/api/usuarios/clientes/1/perfil
+- URL: http://localhost:8083/api/usuarios/clientes/1/perfil
 
 ### Body
 
@@ -159,7 +159,7 @@ No aplica.
 ### Endpoint
 
 - Método: GET
-- URL: http://localhost:8081/api/usuarios/clientes/999/perfil
+- URL: http://localhost:8083/api/usuarios/clientes/999/perfil
 
 ### Body
 

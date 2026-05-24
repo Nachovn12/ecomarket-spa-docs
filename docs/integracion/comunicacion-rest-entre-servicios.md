@@ -2,12 +2,14 @@
 
 ## Proyecto
 
-**EcoMarket SPA**
-**Asignatura:** Desarrollo Full Stack I — DSY1103
-**Sección:** 003D
-**Entrega:** EP2 | Entrega de Encargo grupal Parte 1
-**Arquitectura:** Microservicios independientes con API Gateway
-**Estilo de comunicación:** REST API
+| Campo | Detalle |
+| --- | --- |
+| Proyecto | EcoMarket SPA |
+| Asignatura | Desarrollo Full Stack I — DSY1103 |
+| Sección | 003D |
+| Entrega | EP2, Entrega de Encargo grupal Parte 1 |
+| Arquitectura | Microservicios independientes con API Gateway |
+| Estilo de comunicación | REST API |
 
 ---
 
@@ -287,10 +289,10 @@ Ejemplo conceptual:
   "estado": "PREPARADO",
   "_links": {
     "self": {
-      "href": "http://localhost:8085/api/envios/1"
+      "href": "http://localhost:8087/api/envios/1"
     },
     "seguimiento": {
-      "href": "http://localhost:8085/api/envios/1/seguimiento"
+      "href": "http://localhost:8087/api/envios/1/seguimiento"
     }
   }
 }
@@ -360,13 +362,13 @@ Cada microservicio conserva su propia base MySQL:
 
 | Microservicio                  | Base de datos             |
 | ------------------------------ | ------------------------- |
-| MS Usuarios e Identidad        | `ecomarket_usuarios_db`   |
-| MS Catálogo                    | `ecomarket_catalogo_db`   |
-| MS Inventario y Abastecimiento | `ecomarket_inventario_db` |
-| MS Pedidos y Ventas            | `ecomarket_ventas_db`     |
-| MS Logística de Envíos         | `ecomarket_logistica_db`  |
-| MS Administración y Soporte    | `ecomarket_admin_db`      |
-| MS Reportes                    | `ecomarket_reportes_db`   |
+| MS Usuarios e Identidad        | `bd_usuarios`   |
+| MS Catálogo                    | `bd_catalogo`   |
+| MS Inventario y Abastecimiento | `bd_inventario` |
+| MS Pedidos y Ventas            | `bd_ventas`     |
+| MS Logística de Envíos         | `bd_logistica`  |
+| MS Administración y Soporte    | `bd_admin`      |
+| MS Reportes                    | `bd_reportes`   |
 
 La transferencia de datos entre dominios debe realizarse mediante contratos REST y no mediante acceso directo a tablas externas.
 

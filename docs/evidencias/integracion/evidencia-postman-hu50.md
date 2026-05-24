@@ -22,14 +22,14 @@ La comunicación externa se centraliza mediante el **API Gateway**, mientras que
 
 | Elemento | Valor |
 |---|---|
-| API Gateway | `http://localhost:8080` |
-| MS Usuarios e Identidad | `http://localhost:8081` |
-| MS Catálogo | `http://localhost:8082` |
-| MS Inventario y Abastecimiento | `http://localhost:8083` |
-| MS Pedidos y Ventas | `http://localhost:8084` |
-| MS Logística de Envíos | `http://localhost:8085` |
-| MS Administración y Soporte | `http://localhost:8086` |
-| MS Reportes | `http://localhost:8087` |
+| API Gateway | `http://localhost:8081` |
+| MS Usuarios e Identidad | `http://localhost:8083` |
+| MS Catálogo | `http://localhost:8084` |
+| MS Inventario y Abastecimiento | `http://localhost:8085` |
+| MS Pedidos y Ventas | `http://localhost:8086` |
+| MS Logística de Envíos | `http://localhost:8087` |
+| MS Administración y Soporte | `http://localhost:8088` |
+| MS Reportes | `http://localhost:8089` |
 
 ---
 
@@ -53,16 +53,16 @@ postman/EcoMarket-SPA-local.postman_environment.json
 
 | Variable | Valor |
 |---|---|
-| `base_url` | `http://localhost:8080` |
+| `base_url` | `http://localhost:8081` |
 | `token` | Token JWT o token de sesión si corresponde |
-| `api_gateway_port` | `8080` |
-| `ms_usuarios_port` | `8081` |
-| `ms_catalogo_port` | `8082` |
-| `ms_inventario_port` | `8083` |
-| `ms_pedidos_port` | `8084` |
-| `ms_logistica_port` | `8085` |
-| `ms_admin_port` | `8086` |
-| `ms_reportes_port` | `8087` |
+| `api_gateway_port` | `8081` |
+| `ms_usuarios_port` | `8083` |
+| `ms_catalogo_port` | `8084` |
+| `ms_inventario_port` | `8085` |
+| `ms_pedidos_port` | `8086` |
+| `ms_logistica_port` | `8087` |
+| `ms_admin_port` | `8088` |
+| `ms_reportes_port` | `8089` |
 
 ---
 
@@ -91,7 +91,7 @@ Confirmar que el API Gateway se encuentra activo y disponible para recibir solic
 ## Request
 
 ```http
-GET http://localhost:8080/actuator/health
+GET http://localhost:8081/actuator/health
 ```
 
 ## Response esperado
@@ -135,7 +135,7 @@ Validar que el flujo de pedidos pueda consultar disponibilidad de stock antes de
 ## Request
 
 ```http
-GET http://localhost:8080/stock?idProducto=1&idTienda=1
+GET http://localhost:8081/stock?idProducto=1&idTienda=1
 ```
 
 ## Response esperado
@@ -186,7 +186,7 @@ Validar que un pedido confirmado pueda generar una solicitud de despacho hacia e
 ## Request
 
 ```http
-POST http://localhost:8080/envios
+POST http://localhost:8081/envios
 Content-Type: application/json
 ```
 
@@ -246,7 +246,7 @@ Validar que el MS Reportes pueda consumir datos comerciales generados por el MS 
 ## Request
 
 ```http
-GET http://localhost:8080/ventas
+GET http://localhost:8081/ventas
 ```
 
 ## Response esperado
@@ -298,7 +298,7 @@ Validar que el MS Reportes pueda consultar información de pedidos para generar 
 ## Request
 
 ```http
-GET http://localhost:8080/pedidos
+GET http://localhost:8081/pedidos
 ```
 
 ## Response esperado
@@ -346,7 +346,7 @@ Validar que el MS Reportes pueda consumir información de inventario para report
 ## Request
 
 ```http
-GET http://localhost:8080/inventario
+GET http://localhost:8081/inventario
 ```
 
 ## Response esperado
@@ -395,7 +395,7 @@ Validar que el MS Reportes pueda consultar tiendas para generar reportes de rend
 ## Request
 
 ```http
-GET http://localhost:8080/admin/tiendas
+GET http://localhost:8081/admin/tiendas
 ```
 
 ## Response esperado
@@ -443,7 +443,7 @@ Validar que el MS Reportes pueda consumir datos de soporte para generar métrica
 ## Request
 
 ```http
-GET http://localhost:8080/soporte/tickets
+GET http://localhost:8081/soporte/tickets
 ```
 
 ## Response esperado
@@ -491,7 +491,7 @@ Validar que el MS Reportes pueda exponer indicadores ejecutivos para la toma de 
 ## Request
 
 ```http
-GET http://localhost:8080/kpi
+GET http://localhost:8081/kpi
 ```
 
 ## Response esperado
@@ -568,7 +568,7 @@ Ejemplo:
 
 ```txt
 Método: GET
-URL: http://localhost:8080/actuator/health
+URL: http://localhost:8081/actuator/health
 Código HTTP obtenido: 200 OK
 Resultado: API Gateway activo
 Observación: Endpoint validado correctamente desde Postman
@@ -628,7 +628,7 @@ cd ms-administracion-soporte
 Después probar las rutas desde Postman usando:
 
 ```txt
-http://localhost:8080
+http://localhost:8081
 ```
 
 ---

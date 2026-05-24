@@ -80,16 +80,16 @@ docs/evidencias/postman/
 
 Para facilitar las pruebas, se recomienda utilizar un environment local con las siguientes variables:
 
-| Variable         | Valor sugerido          | Descripción                                    |
-| ---------------- | ----------------------- | ---------------------------------------------- |
-| `gateway_url`    | `http://localhost:8080` | URL base del API Gateway                       |
-| `usuarios_url`   | `http://localhost:8081` | URL directa del MS Usuarios e Identidad        |
-| `catalogo_url`   | `http://localhost:8082` | URL directa del MS Catálogo                    |
-| `inventario_url` | `http://localhost:8083` | URL directa del MS Inventario y Abastecimiento |
-| `pedidos_url`    | `http://localhost:8084` | URL directa del MS Pedidos y Ventas            |
-| `logistica_url`  | `http://localhost:8085` | URL directa del MS Logística de Envíos         |
-| `admin_url`      | `http://localhost:8086` | URL directa del MS Administración y Soporte    |
-| `reportes_url`   | `http://localhost:8087` | URL directa del MS Reportes                    |
+| Variable | Valor sugerido |
+|---|---|
+| `gateway_url` | `http://localhost:8081` |
+| `usuarios_url` | `http://localhost:8083` |
+| `catalogo_url` | `http://localhost:8084` |
+| `inventario_url` | `http://localhost:8085` |
+| `pedidos_url` | `http://localhost:8086` |
+| `logistica_url` | `http://localhost:8087` |
+| `admin_url` | `http://localhost:8088` |
+| `reportes_url` | `http://localhost:8089` |
 
 ---
 

@@ -50,7 +50,7 @@ Puerto del microservicio:
 Base URL:
 
 ```text
-http://localhost:8086
+http://localhost:8088
 ```
 
 Carpeta de capturas:
@@ -68,7 +68,7 @@ docs/evidencias-defensa/capturas/admin-soporte/
 ### Método y URL
 
 ```text
-POST http://localhost:8086/api/admin/tiendas
+POST http://localhost:8088/api/admin/tiendas
 ```
 
 ### Body
@@ -114,7 +114,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_admin_crear_tienda.png
 ### Método y URL
 
 ```text
-GET http://localhost:8086/api/admin/tiendas
+GET http://localhost:8088/api/admin/tiendas
 ```
 
 ### Resultado esperado
@@ -144,7 +144,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_admin_listar_tiendas.png
 ### Método y URL
 
 ```text
-GET http://localhost:8086/api/admin/tiendas/1
+GET http://localhost:8088/api/admin/tiendas/1
 ```
 
 ### Resultado esperado
@@ -176,7 +176,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_admin_consultar_tienda.pn
 ### Método y URL
 
 ```text
-PUT http://localhost:8086/api/admin/tiendas/1
+PUT http://localhost:8088/api/admin/tiendas/1
 ```
 
 ### Body
@@ -220,7 +220,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_admin_actualizar_tienda.p
 ### Método y URL
 
 ```text
-GET http://localhost:8086/api/admin/tiendas/1
+GET http://localhost:8088/api/admin/tiendas/1
 ```
 
 ### Resultado esperado
@@ -255,7 +255,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_admin_consultar_tienda_ac
 ### Método y URL
 
 ```text
-POST http://localhost:8086/api/admin/tiendas/1/personal
+POST http://localhost:8088/api/admin/tiendas/1/personal
 ```
 
 ### Body
@@ -296,7 +296,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_admin_asignar_personal.pn
 ### Método y URL
 
 ```text
-GET http://localhost:8086/api/admin/tiendas/1/personal
+GET http://localhost:8088/api/admin/tiendas/1/personal
 ```
 
 ### Resultado esperado
@@ -328,7 +328,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_admin_listar_personal_tie
 ### Método y URL
 
 ```text
-POST http://localhost:8086/api/soporte/tickets
+POST http://localhost:8088/api/soporte/tickets
 ```
 
 ### Body
@@ -373,7 +373,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_crear_ticket.png
 ### Método y URL
 
 ```text
-GET http://localhost:8086/api/soporte/tickets
+GET http://localhost:8088/api/soporte/tickets
 ```
 
 ### Resultado esperado
@@ -402,7 +402,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_listar_tickets.pn
 ### Método y URL
 
 ```text
-GET http://localhost:8086/api/soporte/tickets/1
+GET http://localhost:8088/api/soporte/tickets/1
 ```
 
 ### Resultado esperado
@@ -434,7 +434,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_consultar_ticket.
 ### Método y URL
 
 ```text
-PATCH http://localhost:8086/api/soporte/tickets/1/estado?estado=EN_ATENCION
+PATCH http://localhost:8088/api/soporte/tickets/1/estado?estado=EN_ATENCION
 ```
 
 ### Resultado esperado
@@ -462,7 +462,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_actualizar_estado
 ### Método y URL
 
 ```text
-POST http://localhost:8086/api/soporte/tickets/1/respuestas
+POST http://localhost:8088/api/soporte/tickets/1/respuestas
 ```
 
 ### Body
@@ -501,7 +501,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_responder_ticket.
 ### Método y URL
 
 ```text
-GET http://localhost:8086/api/soporte/tickets/1/respuestas
+GET http://localhost:8088/api/soporte/tickets/1/respuestas
 ```
 
 ### Resultado esperado
@@ -532,7 +532,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_listar_respuestas
 ### Método y URL
 
 ```text
-POST http://localhost:8086/api/admin/monitorizacion/metricas
+POST http://localhost:8088/api/admin/monitorizacion/metricas
 ```
 
 ### Body
@@ -573,7 +573,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_monitorizacion_metrica_di
 ### Método y URL
 
 ```text
-POST http://localhost:8086/api/admin/monitorizacion/metricas
+POST http://localhost:8088/api/admin/monitorizacion/metricas
 ```
 
 ### Body
@@ -614,7 +614,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_monitorizacion_metrica_fa
 ### Método y URL
 
 ```text
-GET http://localhost:8086/api/admin/monitorizacion/metricas
+GET http://localhost:8088/api/admin/monitorizacion/metricas
 ```
 
 ### Resultado esperado
@@ -644,7 +644,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_monitorizacion_listar_met
 ### Método y URL
 
 ```text
-POST http://localhost:8086/api/admin/monitorizacion/alertas
+POST http://localhost:8088/api/admin/monitorizacion/alertas
 ```
 
 ### Body
@@ -683,7 +683,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_monitorizacion_registrar_
 ### Método y URL
 
 ```text
-GET http://localhost:8086/api/admin/monitorizacion/alertas
+GET http://localhost:8088/api/admin/monitorizacion/alertas
 ```
 
 ### Resultado esperado
@@ -712,7 +712,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_monitorizacion_listar_ale
 ### Método y URL
 
 ```text
-PATCH http://localhost:8086/api/admin/monitorizacion/alertas/1/resolver
+PATCH http://localhost:8088/api/admin/monitorizacion/alertas/1/resolver
 ```
 
 ### Resultado esperado
@@ -743,7 +743,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_monitorizacion_resolver_a
 ### Método y URL
 
 ```text
-POST http://localhost:8086/api/admin/respaldos
+POST http://localhost:8088/api/admin/respaldos
 ```
 
 ### Body
@@ -786,7 +786,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_respaldo_programar.png
 ### Método y URL
 
 ```text
-GET http://localhost:8086/api/admin/respaldos
+GET http://localhost:8088/api/admin/respaldos
 ```
 
 ### Resultado esperado
@@ -814,7 +814,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_respaldo_listar.png
 ### Método y URL
 
 ```text
-PATCH http://localhost:8086/api/admin/respaldos/1/ejecutar
+PATCH http://localhost:8088/api/admin/respaldos/1/ejecutar
 ```
 
 ### Resultado esperado
@@ -843,7 +843,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_respaldo_ejecutar.png
 ### Método y URL
 
 ```text
-PATCH http://localhost:8086/api/admin/respaldos/1/restaurar
+PATCH http://localhost:8088/api/admin/respaldos/1/restaurar
 ```
 
 ### Resultado esperado
@@ -874,7 +874,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_respaldo_restaurar.png
 ### Método y URL
 
 ```text
-POST http://localhost:8086/api/admin/tiendas
+POST http://localhost:8088/api/admin/tiendas
 ```
 
 ### Body
@@ -914,7 +914,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_admin_error_horario_inval
 ### Método y URL
 
 ```text
-POST http://localhost:8086/api/soporte/tickets
+POST http://localhost:8088/api/soporte/tickets
 ```
 
 ### Body
@@ -954,7 +954,7 @@ docs/evidencias-defensa/capturas/admin-soporte/postman_soporte_error_email_inval
 ### Método y URL
 
 ```text
-PATCH http://localhost:8086/api/soporte/tickets/1/estado?estado=NO_EXISTE
+PATCH http://localhost:8088/api/soporte/tickets/1/estado?estado=NO_EXISTE
 ```
 
 ### Resultado esperado

@@ -60,7 +60,7 @@ Este archivo documenta las pruebas realizadas sobre los endpoints de registro, c
 ## Endpoint
 
 ```text
-POST http://localhost:8081/api/usuarios/registro
+POST http://localhost:8083/api/usuarios/registro
 ```
 
 ## Body enviado
@@ -99,7 +99,7 @@ docs/evidencias-defensa/capturas/postman_registro_cliente.png
 ## Endpoint
 
 ```text
-GET http://localhost:8081/api/usuarios/clientes/1/perfil
+GET http://localhost:8083/api/usuarios/clientes/1/perfil
 ```
 
 ## Body enviado
@@ -127,10 +127,10 @@ No aplica.
   "fechaRegistro": "2026-05-22T01:00:00",
   "_links": {
     "self": {
-      "href": "http://localhost:8081/api/usuarios/clientes/1/perfil"
+      "href": "http://localhost:8083/api/usuarios/clientes/1/perfil"
     },
     "actualizarPerfil": {
-      "href": "http://localhost:8081/api/usuarios/clientes/1/perfil"
+      "href": "http://localhost:8083/api/usuarios/clientes/1/perfil"
     }
   }
 }
@@ -156,7 +156,7 @@ docs/evidencias-defensa/capturas/postman_get_perfil_cliente.png
 ## Endpoint
 
 ```text
-PUT http://localhost:8081/api/usuarios/clientes/1/perfil
+PUT http://localhost:8083/api/usuarios/clientes/1/perfil
 ```
 
 ## Body enviado
@@ -198,7 +198,7 @@ docs/evidencias-defensa/capturas/postman_put_perfil_cliente.png
 ## Endpoint
 
 ```text
-PUT http://localhost:8081/api/usuarios/clientes/1/perfil
+PUT http://localhost:8083/api/usuarios/clientes/1/perfil
 ```
 
 ## Body enviado
@@ -253,7 +253,7 @@ docs/evidencias-defensa/capturas/postman_error_correo_invalido.png
 ## Endpoint
 
 ```text
-GET http://localhost:8081/api/usuarios/clientes/999/perfil
+GET http://localhost:8083/api/usuarios/clientes/999/perfil
 ```
 
 ## Body enviado
@@ -297,7 +297,7 @@ docs/evidencias-defensa/capturas/postman_error_cliente_inexistente.png
 ## Endpoint
 
 ```text
-PUT http://localhost:8081/api/usuarios/clientes/1/perfil
+PUT http://localhost:8083/api/usuarios/clientes/1/perfil
 ```
 
 ## Body enviado

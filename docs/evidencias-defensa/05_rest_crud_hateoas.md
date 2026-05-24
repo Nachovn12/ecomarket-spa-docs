@@ -97,10 +97,10 @@ Esto permite que la respuesta no solo entregue datos, sino también enlaces rela
   "fechaRegistro": "2026-05-22T01:00:00",
   "_links": {
     "self": {
-      "href": "http://localhost:8081/api/usuarios/clientes/1/perfil"
+      "href": "http://localhost:8083/api/usuarios/clientes/1/perfil"
     },
     "actualizarPerfil": {
-      "href": "http://localhost:8081/api/usuarios/clientes/1/perfil"
+      "href": "http://localhost:8083/api/usuarios/clientes/1/perfil"
     }
   }
 }

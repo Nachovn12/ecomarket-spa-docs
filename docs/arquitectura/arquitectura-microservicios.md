@@ -2,12 +2,14 @@
 
 ## Proyecto
 
-**EcoMarket SPA**
-**Asignatura:** Desarrollo Full Stack I — DSY1103
-**Sección:** 003D
-**Entrega:** EP2 | Entrega de Encargo grupal Parte 1
-**Arquitectura:** Microservicios independientes con API Gateway
-**Backend:** Java, Spring Boot, Maven, JPA/Hibernate, MySQL, HATEOAS
+| Campo | Detalle |
+| --- | --- |
+| Proyecto | EcoMarket SPA |
+| Asignatura | Desarrollo Full Stack I — DSY1103 |
+| Sección | 003D |
+| Entrega | EP2, Entrega de Encargo grupal Parte 1 |
+| Arquitectura | Microservicios independientes con API Gateway |
+| Backend | Java, Spring Boot, Maven, JPA/Hibernate, MySQL, HATEOAS |
 
 ---
 
@@ -97,13 +99,13 @@ BD Admin                      BD Reportes
 
 | Microservicio                  | Responsabilidad principal                                       | Base de datos             |
 | ------------------------------ | --------------------------------------------------------------- | ------------------------- |
-| MS Usuarios e Identidad        | Login, registro, roles, permisos y usuarios internos            | `ecomarket_usuarios_db`   |
-| MS Catálogo                    | Productos, categorías, reseñas, búsqueda y atributos ecológicos | `ecomarket_catalogo_db`   |
-| MS Inventario y Abastecimiento | Stock, reservas, movimientos y alertas de inventario            | `ecomarket_inventario_db` |
-| MS Pedidos y Ventas            | Carrito, pedidos, ventas, pagos, facturas y devoluciones        | `ecomarket_ventas_db`     |
-| MS Logística de Envíos         | Envíos, rutas, proveedores y seguimiento                        | `ecomarket_logistica_db`  |
-| MS Administración y Soporte    | Tiendas, tickets, alertas, métricas y respaldos                 | `ecomarket_admin_db`      |
-| MS Reportes                    | Reportes, KPIs, exportaciones y auditoría                       | `ecomarket_reportes_db`   |
+| MS Usuarios e Identidad        | Login, registro, roles, permisos y usuarios internos            | `bd_usuarios`   |
+| MS Catálogo                    | Productos, categorías, reseñas, búsqueda y atributos ecológicos | `bd_catalogo`   |
+| MS Inventario y Abastecimiento | Stock, reservas, movimientos y alertas de inventario            | `bd_inventario` |
+| MS Pedidos y Ventas            | Carrito, pedidos, ventas, pagos, facturas y devoluciones        | `bd_ventas`     |
+| MS Logística de Envíos         | Envíos, rutas, proveedores y seguimiento                        | `bd_logistica`  |
+| MS Administración y Soporte    | Tiendas, tickets, alertas, métricas y respaldos                 | `bd_admin`      |
+| MS Reportes                    | Reportes, KPIs, exportaciones y auditoría                       | `bd_reportes`   |
 | API Gateway                    | Enrutamiento REST y punto único de entrada                      | No aplica                 |
 
 ---
@@ -271,10 +273,10 @@ Ejemplo conceptual:
   "estado": "PREPARADO",
   "_links": {
     "self": {
-      "href": "http://localhost:8085/api/envios/1"
+      "href": "http://localhost:8087/api/envios/1"
     },
     "seguimiento": {
-      "href": "http://localhost:8085/api/envios/1/seguimiento"
+      "href": "http://localhost:8087/api/envios/1/seguimiento"
     }
   }
 }

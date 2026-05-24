@@ -15,7 +15,7 @@ Esto evita que el cliente tenga que conocer directamente la ubicación de cada m
 ## Puerto
 
 ```txt
-http://localhost:8080
+http://localhost:8081
 ````
 
 ## Rutas principales
@@ -65,7 +65,7 @@ El API Gateway:
 
 * Compilación Maven del módulo `api-gateway`.
 * Ejecución de pruebas unitarias.
-* Ejecución local en puerto `8080`.
+* Ejecución local en puerto `8081`.
 * Validación de `/actuator/health`.
 * Rutas principales documentadas.
 

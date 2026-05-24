@@ -22,16 +22,16 @@ La colección tiene como propósito apoyar la validación técnica del proyecto,
 
 | Variable             | Valor base              | Descripción                                           |
 | -------------------- | ----------------------- | ----------------------------------------------------- |
-| `base_url`           | `http://localhost:8080` | URL principal del API Gateway                         |
+| `base_url`           | `http://localhost:8081` | URL principal del API Gateway                         |
 | `token`              | Vacío inicialmente      | Token JWT o token de sesión para endpoints protegidos |
-| `api_gateway_port`   | `8080`                  | Puerto del API Gateway                                |
-| `ms_usuarios_port`   | `8081`                  | Puerto propuesto para MS Usuarios e Identidad         |
-| `ms_catalogo_port`   | `8082`                  | Puerto propuesto para MS Catálogo                     |
-| `ms_inventario_port` | `8083`                  | Puerto propuesto para MS Inventario y Abastecimiento  |
-| `ms_pedidos_port`    | `8084`                  | Puerto propuesto para MS Pedidos y Ventas             |
-| `ms_logistica_port`  | `8085`                  | Puerto propuesto para MS Logística de Envíos          |
-| `ms_admin_port`      | `8086`                  | Puerto propuesto para MS Administración y Soporte     |
-| `ms_reportes_port`   | `8087`                  | Puerto propuesto para MS Reportes                     |
+| `api_gateway_port`   | `8081`                  | Puerto del API Gateway                                |
+| `ms_usuarios_port`   | `8083`                  | Puerto configurado para MS Usuarios e Identidad       |
+| `ms_catalogo_port`   | `8084`                  | Puerto configurado para MS Catálogo                   |
+| `ms_inventario_port` | `8085`                  | Puerto configurado para MS Inventario y Abastecimiento |
+| `ms_pedidos_port`    | `8086`                  | Puerto configurado para MS Pedidos y Ventas           |
+| `ms_logistica_port`  | `8087`                  | Puerto configurado para MS Logística de Envíos        |
+| `ms_admin_port`      | `8088`                  | Puerto configurado para MS Administración y Soporte   |
+| `ms_reportes_port`   | `8089`                  | Puerto configurado para MS Reportes                   |
 
 ---
 
@@ -71,7 +71,7 @@ Esta organización permite validar cada dominio funcional de EcoMarket SPA de fo
 
 Para validar correctamente los endpoints desde Postman, se recomienda seguir este flujo:
 
-1. Levantar el componente `api-gateway` en el puerto `8080`.
+1. Levantar el componente `api-gateway` en el puerto `8081`.
 2. Levantar el microservicio que se desea probar.
 3. Importar el ambiente `EcoMarket-SPA-local.postman_environment.json`.
 4. Importar la colección `EcoMarket-SPA.postman_collection.json`.
@@ -239,7 +239,7 @@ La colección utiliza como URL principal:
 Por defecto:
 
 ```txt
-http://localhost:8080
+http://localhost:8081
 ```
 
 Esto significa que las solicitudes se realizan a través del API Gateway, no directamente a cada microservicio.
@@ -247,13 +247,13 @@ Esto significa que las solicitudes se realizan a través del API Gateway, no dir
 Ejemplo:
 
 ```txt
-http://localhost:8080/productos
+http://localhost:8081/productos
 ```
 
 En lugar de:
 
 ```txt
-http://localhost:8082/productos
+http://localhost:8084/productos
 ```
 
 Esto permite validar que el Gateway funcione como punto central de entrada REST para EcoMarket SPA.

@@ -1,4 +1,4 @@
-﻿# Flujo Git - EcoMarket SPA
+# Flujo Git - EcoMarket SPA
 
 ## Ramas principales
 
@@ -52,3 +52,4 @@ Rama principal de integración del equipo. Todo avance validado desde las ramas 
 3. Los avances se integran primero en develop.
 4. develop se usa como rama de integración.
 5. main queda reservada para avances estables y validados.
+

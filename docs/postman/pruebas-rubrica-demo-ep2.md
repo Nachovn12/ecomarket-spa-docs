@@ -899,7 +899,7 @@ Esperado:
 ## G1. Crear reporte
 
 ```http
-POST {{reportes_url}}/api/reportes
+POST {{reportes_url}}/api/v1/reportes
 ```
 
 Body:
@@ -926,7 +926,7 @@ Esperado:
 ## G2. Listar reportes
 
 ```http
-GET {{reportes_url}}/api/reportes
+GET {{reportes_url}}/api/v1/reportes
 ```
 
 Esperado:
@@ -940,7 +940,7 @@ Esperado:
 ## G3. Crear KPI
 
 ```http
-POST {{reportes_url}}/api/kpi
+POST {{reportes_url}}/api/v1/kpis
 ```
 
 Body:
@@ -964,7 +964,7 @@ Esperado:
 ## G4. Consultar KPIs
 
 ```http
-GET {{reportes_url}}/api/kpi
+GET {{reportes_url}}/api/v1/kpis
 ```
 
 Esperado:

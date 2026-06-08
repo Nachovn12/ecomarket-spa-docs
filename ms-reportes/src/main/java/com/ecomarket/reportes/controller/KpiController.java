@@ -1,8 +1,8 @@
 package com.ecomarket.reportes.controller;
 
 import com.ecomarket.reportes.dto.IndicadorKPIResponseDTO;
-import com.ecomarket.reportes.entity.IndicadorKPI;
-import com.ecomarket.reportes.entity.TipoKPI;
+import com.ecomarket.reportes.model.IndicadorKPI;
+import com.ecomarket.reportes.model.TipoKPI;
 import com.ecomarket.reportes.service.ReporteService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;

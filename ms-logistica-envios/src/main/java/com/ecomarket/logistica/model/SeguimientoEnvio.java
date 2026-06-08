@@ -1,5 +1,9 @@
 package com.ecomarket.logistica.model;
 
+
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
 import com.ecomarket.logistica.model.enums.EstadoEnvio;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -7,6 +11,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "seguimientos_envio")
+@Getter
+@Setter
+@NoArgsConstructor
 public class SeguimientoEnvio {
 
     @Id
@@ -28,26 +35,8 @@ public class SeguimientoEnvio {
     private String actualizadoPor;
 
     private LocalDateTime fechaRegistro;
-
-    public SeguimientoEnvio() {}
-
     @PrePersist
     protected void onCreate() {
         this.fechaRegistro = LocalDateTime.now();
     }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Envio getEnvio() { return envio; }
-    public void setEnvio(Envio envio) { this.envio = envio; }
-    public EstadoEnvio getEstado() { return estado; }
-    public void setEstado(EstadoEnvio estado) { this.estado = estado; }
-    public String getUbicacion() { return ubicacion; }
-    public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }
-    public String getObservacion() { return observacion; }
-    public void setObservacion(String observacion) { this.observacion = observacion; }
-    public String getActualizadoPor() { return actualizadoPor; }
-    public void setActualizadoPor(String actualizadoPor) { this.actualizadoPor = actualizadoPor; }
-    public LocalDateTime getFechaRegistro() { return fechaRegistro; }
-    public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
 }

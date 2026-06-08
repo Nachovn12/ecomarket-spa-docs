@@ -1,6 +1,6 @@
 package com.ecomarket.reportes.dto;
 
-import com.ecomarket.reportes.entity.FormatoExportacion;
+import com.ecomarket.reportes.model.FormatoExportacion;
 import jakarta.validation.constraints.*;
 
 public class ExportacionRequestDTO {

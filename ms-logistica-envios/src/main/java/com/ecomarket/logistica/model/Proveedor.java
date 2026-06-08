@@ -1,5 +1,9 @@
 package com.ecomarket.logistica.model;
 
+
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -7,6 +11,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "proveedores")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Proveedor {
 
     @Id
@@ -40,9 +47,6 @@ public class Proveedor {
     private Boolean activo = true;
 
     private LocalDateTime fechaRegistro;
-
-    public Proveedor() {}
-
     @PrePersist
     protected void onCreate() {
         this.fechaRegistro = LocalDateTime.now();
@@ -50,25 +54,4 @@ public class Proveedor {
             this.activo = true;
         }
     }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getRazonSocial() { return razonSocial; }
-    public void setRazonSocial(String razonSocial) { this.razonSocial = razonSocial; }
-    public String getRut() { return rut; }
-    public void setRut(String rut) { this.rut = rut; }
-    public String getContacto() { return contacto; }
-    public void setContacto(String contacto) { this.contacto = contacto; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
-    public String getTipoProveedor() { return tipoProveedor; }
-    public void setTipoProveedor(String tipoProveedor) { this.tipoProveedor = tipoProveedor; }
-    public String getCobertura() { return cobertura; }
-    public void setCobertura(String cobertura) { this.cobertura = cobertura; }
-    public Boolean getActivo() { return activo; }
-    public void setActivo(Boolean activo) { this.activo = activo; }
-    public LocalDateTime getFechaRegistro() { return fechaRegistro; }
-    public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
 }

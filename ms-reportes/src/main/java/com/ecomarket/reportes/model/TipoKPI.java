@@ -1,0 +1,5 @@
+package com.ecomarket.reportes.model;
+
+public enum TipoKPI {
+    VENTAS_TOTALES, STOCK_BAJO, ROTACION_INVENTARIO, PEDIDOS_ENTREGADOS, RENDIMIENTO_TIENDA
+}

@@ -1,10 +1,17 @@
 package com.ecomarket.catalogo.model;
 
+
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "categorias")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Categoria {
 
     @Id
@@ -20,36 +27,4 @@ public class Categoria {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoCategoria estado = EstadoCategoria.ACTIVA;
-
-    public Long getIdCategoria() {
-        return idCategoria;
-    }
-
-    public void setIdCategoria(Long idCategoria) {
-        this.idCategoria = idCategoria;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public EstadoCategoria getEstado() {
-        return estado;
-    }
-
-    public void setEstado(EstadoCategoria estado) {
-        this.estado = estado;
-    }
 }

@@ -1,5 +1,9 @@
 package com.ecomarket.logistica.model;
 
+
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
 import com.ecomarket.logistica.model.enums.EstadoEnvio;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -8,6 +12,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "envios")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Envio {
 
     @Id
@@ -48,9 +55,6 @@ public class Envio {
     @ManyToOne
     @JoinColumn(name = "ruta_entrega_id")
     private RutaEntrega rutaEntrega;
-
-    public Envio() {}
-
     @PrePersist
     protected void onCreate() {
         this.fechaCreacion = LocalDateTime.now();
@@ -64,31 +68,4 @@ public class Envio {
     protected void onUpdate() {
         this.fechaActualizacion = LocalDateTime.now();
     }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Long getIdPedido() { return idPedido; }
-    public void setIdPedido(Long idPedido) { this.idPedido = idPedido; }
-    public String getOrigen() { return origen; }
-    public void setOrigen(String origen) { this.origen = origen; }
-    public String getDestino() { return destino; }
-    public void setDestino(String destino) { this.destino = destino; }
-    public EstadoEnvio getEstado() { return estado; }
-    public void setEstado(EstadoEnvio estado) { this.estado = estado; }
-    public String getUbicacionActual() { return ubicacionActual; }
-    public void setUbicacionActual(String ubicacionActual) { this.ubicacionActual = ubicacionActual; }
-    public String getObservacion() { return observacion; }
-    public void setObservacion(String observacion) { this.observacion = observacion; }
-    public String getMotivoIncidencia() { return motivoIncidencia; }
-    public void setMotivoIncidencia(String motivoIncidencia) { this.motivoIncidencia = motivoIncidencia; }
-    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
-    public LocalDateTime getFechaEstimadaEntrega() { return fechaEstimadaEntrega; }
-    public void setFechaEstimadaEntrega(LocalDateTime fechaEstimadaEntrega) { this.fechaEstimadaEntrega = fechaEstimadaEntrega; }
-    public LocalDateTime getFechaActualizacion() { return fechaActualizacion; }
-    public void setFechaActualizacion(LocalDateTime fechaActualizacion) { this.fechaActualizacion = fechaActualizacion; }
-    public Proveedor getProveedor() { return proveedor; }
-    public void setProveedor(Proveedor proveedor) { this.proveedor = proveedor; }
-    public RutaEntrega getRutaEntrega() { return rutaEntrega; }
-    public void setRutaEntrega(RutaEntrega rutaEntrega) { this.rutaEntrega = rutaEntrega; }
 }

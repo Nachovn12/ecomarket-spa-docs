@@ -4,7 +4,8 @@ import com.ecomarket.usuarios.dto.ActualizarPerfilClienteRequestDTO;
 import com.ecomarket.usuarios.dto.PerfilClienteResponseDTO;
 import com.ecomarket.usuarios.dto.UsuarioRequestDTO;
 import com.ecomarket.usuarios.dto.UsuarioResponseDTO;
-import com.ecomarket.usuarios.entity.Usuario;
+import com.ecomarket.usuarios.model.Rol;
+import com.ecomarket.usuarios.model.Usuario;
 import com.ecomarket.usuarios.exception.UsuarioNoEncontradoException;
 import com.ecomarket.usuarios.exception.UsuarioYaExisteException;
 import com.ecomarket.usuarios.repository.UsuarioRepository;
@@ -35,7 +36,7 @@ public class UsuarioService {
                 .nombre(request.getNombre().trim())
                 .correo(correoNormalizado)
                 .password(request.getPassword())
-                .rol("CLIENTE")
+                .rol(Rol.CLIENTE)
                 .activo(true)
                 .eliminado(false)
                 .fechaRegistro(LocalDateTime.now())
@@ -101,7 +102,7 @@ public class UsuarioService {
             throw new UsuarioNoEncontradoException("Cliente no encontrado con id: " + idCliente);
         }
 
-        if (!"CLIENTE".equalsIgnoreCase(usuario.getRol())) {
+        if (!Rol.CLIENTE.equals(usuario.getRol())) {
             log.warn("Usuario consultado no corresponde a rol CLIENTE. idUsuario={}, rol={}", idCliente, usuario.getRol());
             throw new UsuarioNoEncontradoException("Cliente no encontrado con id: " + idCliente);
         }
@@ -114,7 +115,7 @@ public class UsuarioService {
                 .id(usuario.getId())
                 .nombre(usuario.getNombre())
                 .correo(usuario.getCorreo())
-                .rol(usuario.getRol())
+                .rol(usuario.getRol().name())
                 .activo(usuario.getActivo())
                 .fechaRegistro(usuario.getFechaRegistro())
                 .build();
@@ -128,7 +129,7 @@ public class UsuarioService {
                 .telefono(usuario.getTelefono())
                 .direccionEnvio(usuario.getDireccionEnvio())
                 .medioPago(usuario.getMedioPago())
-                .rol(usuario.getRol())
+                .rol(usuario.getRol().name())
                 .activo(usuario.getActivo())
                 .fechaRegistro(usuario.getFechaRegistro())
                 .build();

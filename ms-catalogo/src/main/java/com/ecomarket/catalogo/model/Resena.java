@@ -1,5 +1,9 @@
 package com.ecomarket.catalogo.model;
 
+
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -8,6 +12,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "resenas")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Resena {
 
     @Id
@@ -37,57 +44,5 @@ public class Resena {
     @PrePersist
     public void prePersist() {
         this.fechaCreacion = LocalDateTime.now();
-    }
-
-    public Long getIdResena() {
-        return idResena;
-    }
-
-    public void setIdResena(Long idResena) {
-        this.idResena = idResena;
-    }
-
-    public Long getIdCliente() {
-        return idCliente;
-    }
-
-    public void setIdCliente(Long idCliente) {
-        this.idCliente = idCliente;
-    }
-
-    public Producto getProducto() {
-        return producto;
-    }
-
-    public void setProducto(Producto producto) {
-        this.producto = producto;
-    }
-
-    public Integer getCalificacion() {
-        return calificacion;
-    }
-
-    public void setCalificacion(Integer calificacion) {
-        this.calificacion = calificacion;
-    }
-
-    public String getComentario() {
-        return comentario;
-    }
-
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
-    }
-
-    public EstadoResena getEstado() {
-        return estado;
-    }
-
-    public void setEstado(EstadoResena estado) {
-        this.estado = estado;
-    }
-
-    public LocalDateTime getFechaCreacion() {
-        return fechaCreacion;
     }
 }

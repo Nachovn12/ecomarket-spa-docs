@@ -3,7 +3,8 @@ package com.ecomarket.usuarios.service;
 import com.ecomarket.usuarios.dto.RolPermisosRequestDTO;
 import com.ecomarket.usuarios.dto.RolPermisosResponseDTO;
 import com.ecomarket.usuarios.dto.VerificacionAccesoResponseDTO;
-import com.ecomarket.usuarios.entity.Usuario;
+import com.ecomarket.usuarios.model.Rol;
+import com.ecomarket.usuarios.model.Usuario;
 import com.ecomarket.usuarios.exception.AccesoNoAutorizadoException;
 import com.ecomarket.usuarios.exception.UsuarioNoEncontradoException;
 import com.ecomarket.usuarios.repository.UsuarioRepository;
@@ -11,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,10 +22,10 @@ public class RolPermisoService {
 
     private static final String ROL_ADMINISTRADOR = "ADMINISTRADOR";
 
-    private static final Set<String> ROLES_INTERNOS = Set.of(
-            "EMPLEADO",
-            "GERENTE",
-            "ADMINISTRADOR"
+    private static final Set<Rol> ROLES_INTERNOS = Set.of(
+            Rol.EMPLEADO,
+            Rol.GERENTE,
+            Rol.ADMINISTRADOR
     );
 
     private static final Set<String> MODULOS_VALIDOS = Set.of(
@@ -45,10 +45,10 @@ public class RolPermisoService {
             "CONFIGURACION"
     );
 
-    private static final Map<String, String> NIVELES_ACCESO = Map.of(
-            "EMPLEADO", "OPERATIVO",
-            "GERENTE", "GESTION",
-            "ADMINISTRADOR", "TOTAL"
+    private static final Map<Rol, String> NIVELES_ACCESO = Map.of(
+            Rol.EMPLEADO, "OPERATIVO",
+            Rol.GERENTE, "GESTION",
+            Rol.ADMINISTRADOR, "TOTAL"
     );
 
     private final UsuarioRepository usuarioRepository;
@@ -58,12 +58,12 @@ public class RolPermisoService {
 
         Usuario usuario = buscarUsuarioInternoVigente(id);
 
-        String rolNormalizado = normalizarRol(request.getRol());
+        Rol rolNormalizado = normalizarRol(request.getRol());
         List<String> permisosNormalizados = normalizarPermisos(request.getPermisos());
 
         usuario.setRol(rolNormalizado);
         usuario.setNivelAcceso(NIVELES_ACCESO.get(rolNormalizado));
-        usuario.setPermisos(String.join(",", permisosNormalizados));
+        usuario.setPermisos(permisosNormalizados);
         usuario.setModificadoPor(request.getModificadoPor().trim());
         usuario.setFechaModificacionAcceso(LocalDateTime.now());
 
@@ -84,9 +84,11 @@ public class RolPermisoService {
         Usuario usuario = buscarUsuarioInternoVigente(id);
         String moduloNormalizado = normalizarModulo(modulo);
 
+        List<String> permisos = usuario.getPermisos() != null ? usuario.getPermisos() : List.of();
+
         boolean tieneAcceso = Boolean.TRUE.equals(usuario.getActivo())
                 && !Boolean.TRUE.equals(usuario.getEliminado())
-                && obtenerPermisos(usuario).contains(moduloNormalizado);
+                && permisos.contains(moduloNormalizado);
 
         String mensaje = tieneAcceso
                 ? "Acceso permitido al módulo solicitado"
@@ -94,7 +96,7 @@ public class RolPermisoService {
 
         return VerificacionAccesoResponseDTO.builder()
                 .idUsuario(usuario.getId())
-                .rol(usuario.getRol())
+                .rol(usuario.getRol().name())
                 .nivelAcceso(usuario.getNivelAcceso())
                 .modulo(moduloNormalizado)
                 .accesoPermitido(tieneAcceso)
@@ -106,7 +108,7 @@ public class RolPermisoService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario interno no encontrado"));
 
-        if ("CLIENTE".equalsIgnoreCase(usuario.getRol()) || Boolean.TRUE.equals(usuario.getEliminado())) {
+        if (Rol.CLIENTE.equals(usuario.getRol()) || Boolean.TRUE.equals(usuario.getEliminado())) {
             throw new UsuarioNoEncontradoException("Usuario interno no encontrado");
         }
 
@@ -119,14 +121,18 @@ public class RolPermisoService {
         }
     }
 
-    private String normalizarRol(String rol) {
+    private Rol normalizarRol(String rol) {
         String rolNormalizado = rol.trim().toUpperCase();
-
-        if (!ROLES_INTERNOS.contains(rolNormalizado)) {
-            throw new IllegalArgumentException("Rol interno no válido");
+        Rol rolEnum;
+        try {
+            rolEnum = Rol.valueOf(rolNormalizado);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Rol interno no válido: " + rol);
         }
-
-        return rolNormalizado;
+        if (!ROLES_INTERNOS.contains(rolEnum)) {
+            throw new IllegalArgumentException("Rol interno no válido: " + rol);
+        }
+        return rolEnum;
     }
 
     private List<String> normalizarPermisos(List<String> permisos) {
@@ -154,25 +160,16 @@ public class RolPermisoService {
         }
     }
 
-    private List<String> obtenerPermisos(Usuario usuario) {
-        if (usuario.getPermisos() == null || usuario.getPermisos().isBlank()) {
-            return List.of();
-        }
-
-        return Arrays.stream(usuario.getPermisos().split(","))
-                .map(String::trim)
-                .filter(permiso -> !permiso.isBlank())
-                .toList();
-    }
-
     private RolPermisosResponseDTO mapearRespuesta(Usuario usuario) {
+        List<String> permisos = usuario.getPermisos() != null ? usuario.getPermisos() : List.of();
+
         return RolPermisosResponseDTO.builder()
                 .idUsuario(usuario.getId())
                 .nombre(usuario.getNombre())
                 .correo(usuario.getCorreo())
-                .rol(usuario.getRol())
+                .rol(usuario.getRol().name())
                 .nivelAcceso(usuario.getNivelAcceso())
-                .permisos(obtenerPermisos(usuario))
+                .permisos(permisos)
                 .modificadoPor(usuario.getModificadoPor())
                 .fechaModificacionAcceso(usuario.getFechaModificacionAcceso())
                 .build();

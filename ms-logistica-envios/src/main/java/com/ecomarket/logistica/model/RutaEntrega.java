@@ -1,11 +1,18 @@
 package com.ecomarket.logistica.model;
 
+
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
 import com.ecomarket.logistica.model.enums.EstadoRuta;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "rutas_entrega")
+@Getter
+@Setter
+@NoArgsConstructor
 public class RutaEntrega {
 
     @Id
@@ -17,9 +24,6 @@ public class RutaEntrega {
     private EstadoRuta estado = EstadoRuta.PLANIFICADA;
 
     private LocalDateTime fechaCreacion;
-
-    public RutaEntrega() {}
-
     @PrePersist
     protected void onCreate() {
         this.fechaCreacion = LocalDateTime.now();
@@ -27,11 +31,4 @@ public class RutaEntrega {
             this.estado = EstadoRuta.PLANIFICADA;
         }
     }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public EstadoRuta getEstado() { return estado; }
-    public void setEstado(EstadoRuta estado) { this.estado = estado; }
-    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
 }

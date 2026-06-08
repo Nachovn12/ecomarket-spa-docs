@@ -1,6 +1,6 @@
 package com.ecomarket.admin.repository;
 
-import com.ecomarket.admin.entity.MetricaSistema;
+import com.ecomarket.admin.model.MetricaSistema;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

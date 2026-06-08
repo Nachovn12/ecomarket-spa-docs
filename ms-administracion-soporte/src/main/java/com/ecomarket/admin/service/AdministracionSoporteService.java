@@ -1,9 +1,12 @@
 package com.ecomarket.admin.service;
 
 import com.ecomarket.admin.dto.*;
-import com.ecomarket.admin.entity.*;
+import com.ecomarket.admin.exception.RecursoNoEncontradoException;
+import com.ecomarket.admin.model.*;
 import com.ecomarket.admin.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,6 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdministracionSoporteService {
 
+    private static final Logger log = LoggerFactory.getLogger(AdministracionSoporteService.class);
+
     private final TiendaRepository tiendaRepository;
     private final AsignacionPersonalRepository asignacionPersonalRepository;
     private final TicketSoporteRepository ticketSoporteRepository;
@@ -20,6 +25,11 @@ public class AdministracionSoporteService {
     private final AlertaSistemaRepository alertaSistemaRepository;
     private final MetricaSistemaRepository metricaSistemaRepository;
     private final RespaldoDatosRepository respaldoDatosRepository;
+    private final UsuarioInternoClientService usuarioInternoClientService;
+
+    // =========================================================================
+    // TIENDAS
+    // =========================================================================
 
     public TiendaResponseDTO crearTienda(TiendaRequestDTO request) {
         validarHorarios(request.getHorarioApertura(), request.getHorarioCierre());
@@ -34,7 +44,10 @@ public class AdministracionSoporteService {
                 .fechaCreacion(LocalDateTime.now())
                 .build();
 
-        return mapearTienda(tiendaRepository.save(tienda));
+        Tienda tiendaGuardada = tiendaRepository.save(tienda);
+        log.info("Tienda creada correctamente. idTienda={}, nombre={}", tiendaGuardada.getIdTienda(), tiendaGuardada.getNombre());
+
+        return mapearTienda(tiendaGuardada);
     }
 
     public TiendaResponseDTO actualizarTienda(Long idTienda, TiendaRequestDTO request) {
@@ -48,40 +61,65 @@ public class AdministracionSoporteService {
         tienda.setPoliticasLocales(normalizarTextoOpcional(request.getPoliticasLocales()));
         tienda.setFechaActualizacion(LocalDateTime.now());
 
+        log.info("Tienda actualizada. idTienda={}", idTienda);
         return mapearTienda(tiendaRepository.save(tienda));
     }
 
     public TiendaResponseDTO consultarTienda(Long idTienda) {
+        log.info("Consultando tienda. idTienda={}", idTienda);
         return mapearTienda(obtenerTiendaPorId(idTienda));
     }
 
     public List<TiendaResponseDTO> listarTiendas() {
-        return tiendaRepository.findAll().stream()
+        List<TiendaResponseDTO> tiendas = tiendaRepository.findAll().stream()
                 .map(this::mapearTienda)
                 .toList();
+        log.info("Listado de tiendas. total={}", tiendas.size());
+        return tiendas;
     }
 
+    // =========================================================================
+    // PERSONAL
+    // =========================================================================
+
     public AsignacionPersonalResponseDTO asignarPersonal(AsignacionPersonalRequestDTO request) {
-        obtenerTiendaPorId(request.getIdTienda());
+        Tienda tienda = obtenerTiendaPorId(request.getIdTienda());
+
+        // Comunicación con MS Usuarios e Identidad para validar que el usuario
+        // existe y es un usuario interno activo (IE 2.4.1)
+        log.info("Validando usuario interno en MS Usuarios. idUsuarioInterno={}", request.getIdUsuarioInterno());
+        usuarioInternoClientService.validarUsuarioInternoExiste(request.getIdUsuarioInterno());
 
         AsignacionPersonal asignacion = AsignacionPersonal.builder()
                 .idUsuarioInterno(request.getIdUsuarioInterno())
-                .idTienda(request.getIdTienda())
+                .tienda(tienda)
                 .cargo(request.getCargo().trim())
                 .activa(true)
                 .fechaAsignacion(LocalDateTime.now())
                 .build();
 
-        return mapearAsignacion(asignacionPersonalRepository.save(asignacion));
+        AsignacionPersonal asignacionGuardada = asignacionPersonalRepository.save(asignacion);
+        log.info("Personal asignado correctamente. idAsignacion={}, idTienda={}, idUsuarioInterno={}",
+                asignacionGuardada.getIdAsignacion(), request.getIdTienda(), request.getIdUsuarioInterno());
+
+        return mapearAsignacion(asignacionGuardada);
     }
 
     public List<AsignacionPersonalResponseDTO> listarPersonalPorTienda(Long idTienda) {
         obtenerTiendaPorId(idTienda);
 
-        return asignacionPersonalRepository.findByIdTiendaAndActivaTrue(idTienda).stream()
+        List<AsignacionPersonalResponseDTO> personal = asignacionPersonalRepository
+                .findByTiendaIdTiendaAndActivaTrue(idTienda).stream()
                 .map(this::mapearAsignacion)
                 .toList();
+
+        log.info("Personal listado para tienda. idTienda={}, total={}", idTienda, personal.size());
+        return personal;
     }
+
+    // =========================================================================
+    // TICKETS DE SOPORTE
+    // =========================================================================
 
     public TicketSoporteResponseDTO crearTicketSoporte(TicketSoporteRequestDTO request) {
         TicketSoporte ticket = TicketSoporte.builder()
@@ -94,24 +132,32 @@ public class AdministracionSoporteService {
                 .fechaCreacion(LocalDateTime.now())
                 .build();
 
-        return mapearTicket(ticketSoporteRepository.save(ticket));
+        TicketSoporte ticketGuardado = ticketSoporteRepository.save(ticket);
+        log.info("Ticket de soporte creado. idTicket={}, prioridad={}", ticketGuardado.getIdTicket(), ticketGuardado.getPrioridad());
+
+        return mapearTicket(ticketGuardado);
     }
 
     public TicketSoporteResponseDTO consultarTicket(Long idTicket) {
+        log.info("Consultando ticket de soporte. idTicket={}", idTicket);
         return mapearTicket(obtenerTicketPorId(idTicket));
     }
 
     public List<TicketSoporteResponseDTO> listarTickets() {
-        return ticketSoporteRepository.findAll().stream()
+        List<TicketSoporteResponseDTO> tickets = ticketSoporteRepository.findAll().stream()
                 .map(this::mapearTicket)
                 .toList();
+        log.info("Listado de tickets. total={}", tickets.size());
+        return tickets;
     }
 
     public TicketSoporteResponseDTO actualizarEstadoTicket(Long idTicket, EstadoTicket estado) {
         TicketSoporte ticket = obtenerTicketPorId(idTicket);
+        EstadoTicket estadoAnterior = ticket.getEstado();
         ticket.setEstado(estado);
         ticket.setFechaActualizacion(LocalDateTime.now());
 
+        log.info("Estado de ticket actualizado. idTicket={}, estadoAnterior={}, estadoNuevo={}", idTicket, estadoAnterior, estado);
         return mapearTicket(ticketSoporteRepository.save(ticket));
     }
 
@@ -119,7 +165,7 @@ public class AdministracionSoporteService {
         TicketSoporte ticket = obtenerTicketPorId(request.getIdTicket());
 
         RespuestaSoporte respuesta = RespuestaSoporte.builder()
-                .idTicket(request.getIdTicket())
+                .ticket(ticket)
                 .mensaje(request.getMensaje().trim())
                 .respondidoPor(request.getRespondidoPor().trim())
                 .fechaRespuesta(LocalDateTime.now())
@@ -129,18 +175,29 @@ public class AdministracionSoporteService {
             ticket.setEstado(EstadoTicket.EN_ATENCION);
             ticket.setFechaActualizacion(LocalDateTime.now());
             ticketSoporteRepository.save(ticket);
+            log.info("Ticket pasado a EN_ATENCION automáticamente. idTicket={}", ticket.getIdTicket());
         }
 
-        return mapearRespuesta(respuestaSoporteRepository.save(respuesta));
+        RespuestaSoporte respuestaGuardada = respuestaSoporteRepository.save(respuesta);
+        log.info("Respuesta de ticket registrada. idRespuesta={}, idTicket={}", respuestaGuardada.getIdRespuesta(), ticket.getIdTicket());
+
+        return mapearRespuesta(respuestaGuardada);
     }
 
     public List<RespuestaSoporteResponseDTO> listarRespuestasTicket(Long idTicket) {
         obtenerTicketPorId(idTicket);
 
-        return respuestaSoporteRepository.findByIdTicket(idTicket).stream()
+        List<RespuestaSoporteResponseDTO> respuestas = respuestaSoporteRepository.findByTicketIdTicket(idTicket).stream()
                 .map(this::mapearRespuesta)
                 .toList();
+
+        log.info("Respuestas listadas para ticket. idTicket={}, total={}", idTicket, respuestas.size());
+        return respuestas;
     }
+
+    // =========================================================================
+    // MONITORIZACIÓN — MÉTRICAS Y ALERTAS
+    // =========================================================================
 
     public MetricaSistemaResponseDTO registrarMetrica(MetricaSistemaRequestDTO request) {
         MetricaSistema metrica = MetricaSistema.builder()
@@ -152,32 +209,43 @@ public class AdministracionSoporteService {
                 .build();
 
         MetricaSistema metricaGuardada = metricaSistemaRepository.save(metrica);
+        log.info("Métrica registrada. microservicio={}, disponible={}, errores={}",
+                request.getMicroservicio(), request.getDisponible(), request.getErroresDetectados());
 
         if (Boolean.FALSE.equals(request.getDisponible()) || request.getErroresDetectados() > 0) {
+            String tipoAlerta = Boolean.FALSE.equals(request.getDisponible())
+                    ? "MICROSERVICIO_NO_DISPONIBLE"
+                    : "ERRORES_DETECTADOS";
+
             AlertaSistema alerta = AlertaSistema.builder()
                     .microservicio(request.getMicroservicio().trim())
-                    .tipoAlerta(Boolean.FALSE.equals(request.getDisponible()) ? "MICROSERVICIO_NO_DISPONIBLE" : "ERRORES_DETECTADOS")
+                    .tipoAlerta(tipoAlerta)
                     .descripcion("Se detectó una condición de alerta en el microservicio " + request.getMicroservicio().trim())
                     .resuelta(false)
                     .fechaGeneracion(LocalDateTime.now())
                     .build();
 
             alertaSistemaRepository.save(alerta);
+            log.warn("Alerta generada automáticamente. microservicio={}, tipo={}", request.getMicroservicio(), tipoAlerta);
         }
 
         return mapearMetrica(metricaGuardada);
     }
 
     public List<MetricaSistemaResponseDTO> listarMetricas() {
-        return metricaSistemaRepository.findAll().stream()
+        List<MetricaSistemaResponseDTO> metricas = metricaSistemaRepository.findAll().stream()
                 .map(this::mapearMetrica)
                 .toList();
+        log.info("Listado de métricas. total={}", metricas.size());
+        return metricas;
     }
 
     public List<AlertaSistemaResponseDTO> listarAlertasActivas() {
-        return alertaSistemaRepository.findByResueltaFalse().stream()
+        List<AlertaSistemaResponseDTO> alertas = alertaSistemaRepository.findByResueltaFalse().stream()
                 .map(this::mapearAlerta)
                 .toList();
+        log.info("Listado de alertas activas. total={}", alertas.size());
+        return alertas;
     }
 
     public AlertaSistemaResponseDTO registrarAlerta(AlertaSistemaRequestDTO request) {
@@ -189,18 +257,26 @@ public class AdministracionSoporteService {
                 .fechaGeneracion(LocalDateTime.now())
                 .build();
 
-        return mapearAlerta(alertaSistemaRepository.save(alerta));
+        AlertaSistema alertaGuardada = alertaSistemaRepository.save(alerta);
+        log.info("Alerta manual registrada. idAlerta={}, microservicio={}", alertaGuardada.getIdAlerta(), request.getMicroservicio());
+
+        return mapearAlerta(alertaGuardada);
     }
 
     public AlertaSistemaResponseDTO resolverAlerta(Long idAlerta) {
         AlertaSistema alerta = alertaSistemaRepository.findById(idAlerta)
-                .orElseThrow(() -> new IllegalArgumentException("Alerta no encontrada con id: " + idAlerta));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Alerta no encontrada con id: " + idAlerta));
 
         alerta.setResuelta(true);
         alerta.setFechaResolucion(LocalDateTime.now());
 
+        log.info("Alerta resuelta. idAlerta={}", idAlerta);
         return mapearAlerta(alertaSistemaRepository.save(alerta));
     }
+
+    // =========================================================================
+    // RESPALDOS
+    // =========================================================================
 
     public RespaldoDatosResponseDTO programarRespaldo(RespaldoDatosRequestDTO request) {
         RespaldoDatos respaldo = RespaldoDatos.builder()
@@ -212,7 +288,10 @@ public class AdministracionSoporteService {
                 .fechaProgramada(request.getFechaProgramada())
                 .build();
 
-        return mapearRespaldo(respaldoDatosRepository.save(respaldo));
+        RespaldoDatos respaldoGuardado = respaldoDatosRepository.save(respaldo);
+        log.info("Respaldo programado. idRespaldo={}, origen={}", respaldoGuardado.getIdRespaldo(), request.getOrigenDatos());
+
+        return mapearRespaldo(respaldoGuardado);
     }
 
     public RespaldoDatosResponseDTO ejecutarRespaldo(Long idRespaldo) {
@@ -222,6 +301,7 @@ public class AdministracionSoporteService {
         respaldo.setResultado("Respaldo ejecutado correctamente");
         respaldo.setFechaEjecucion(LocalDateTime.now());
 
+        log.info("Respaldo ejecutado. idRespaldo={}", idRespaldo);
         return mapearRespaldo(respaldoDatosRepository.save(respaldo));
     }
 
@@ -229,6 +309,7 @@ public class AdministracionSoporteService {
         RespaldoDatos respaldo = obtenerRespaldoPorId(idRespaldo);
 
         if (!"EJECUTADO".equalsIgnoreCase(respaldo.getEstado())) {
+            log.warn("Intento de restaurar respaldo en estado incorrecto. idRespaldo={}, estado={}", idRespaldo, respaldo.getEstado());
             throw new IllegalArgumentException("Solo se puede restaurar un respaldo ejecutado");
         }
 
@@ -236,28 +317,35 @@ public class AdministracionSoporteService {
         respaldo.setResultado("Restauración ejecutada correctamente");
         respaldo.setFechaRestauracion(LocalDateTime.now());
 
+        log.info("Respaldo restaurado. idRespaldo={}", idRespaldo);
         return mapearRespaldo(respaldoDatosRepository.save(respaldo));
     }
 
     public List<RespaldoDatosResponseDTO> listarRespaldos() {
-        return respaldoDatosRepository.findAll().stream()
+        List<RespaldoDatosResponseDTO> respaldos = respaldoDatosRepository.findAll().stream()
                 .map(this::mapearRespaldo)
                 .toList();
+        log.info("Listado de respaldos. total={}", respaldos.size());
+        return respaldos;
     }
+
+    // =========================================================================
+    // Métodos privados de búsqueda — lanzan RecursoNoEncontradoException (404)
+    // =========================================================================
 
     private Tienda obtenerTiendaPorId(Long idTienda) {
         return tiendaRepository.findById(idTienda)
-                .orElseThrow(() -> new IllegalArgumentException("Tienda no encontrada con id: " + idTienda));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Tienda no encontrada con id: " + idTienda));
     }
 
     private TicketSoporte obtenerTicketPorId(Long idTicket) {
         return ticketSoporteRepository.findById(idTicket)
-                .orElseThrow(() -> new IllegalArgumentException("Ticket de soporte no encontrado con id: " + idTicket));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Ticket de soporte no encontrado con id: " + idTicket));
     }
 
     private RespaldoDatos obtenerRespaldoPorId(Long idRespaldo) {
         return respaldoDatosRepository.findById(idRespaldo)
-                .orElseThrow(() -> new IllegalArgumentException("Respaldo no encontrado con id: " + idRespaldo));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Respaldo no encontrado con id: " + idRespaldo));
     }
 
     private void validarHorarios(java.time.LocalTime apertura, java.time.LocalTime cierre) {
@@ -269,6 +357,10 @@ public class AdministracionSoporteService {
     private String normalizarTextoOpcional(String texto) {
         return texto == null || texto.isBlank() ? null : texto.trim();
     }
+
+    // =========================================================================
+    // Métodos privados de mapeo Model → DTO
+    // =========================================================================
 
     private TiendaResponseDTO mapearTienda(Tienda tienda) {
         return TiendaResponseDTO.builder()
@@ -288,7 +380,7 @@ public class AdministracionSoporteService {
         return AsignacionPersonalResponseDTO.builder()
                 .idAsignacion(asignacion.getIdAsignacion())
                 .idUsuarioInterno(asignacion.getIdUsuarioInterno())
-                .idTienda(asignacion.getIdTienda())
+                .idTienda(asignacion.getTienda().getIdTienda())
                 .cargo(asignacion.getCargo())
                 .activa(asignacion.getActiva())
                 .fechaAsignacion(asignacion.getFechaAsignacion())
@@ -312,7 +404,7 @@ public class AdministracionSoporteService {
     private RespuestaSoporteResponseDTO mapearRespuesta(RespuestaSoporte respuesta) {
         return RespuestaSoporteResponseDTO.builder()
                 .idRespuesta(respuesta.getIdRespuesta())
-                .idTicket(respuesta.getIdTicket())
+                .idTicket(respuesta.getTicket().getIdTicket())
                 .mensaje(respuesta.getMensaje())
                 .respondidoPor(respuesta.getRespondidoPor())
                 .fechaRespuesta(respuesta.getFechaRespuesta())

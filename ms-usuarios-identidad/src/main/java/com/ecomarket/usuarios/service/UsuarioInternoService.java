@@ -3,7 +3,8 @@ package com.ecomarket.usuarios.service;
 import com.ecomarket.usuarios.dto.UsuarioInternoRequestDTO;
 import com.ecomarket.usuarios.dto.UsuarioInternoResponseDTO;
 import com.ecomarket.usuarios.dto.UsuarioInternoUpdateDTO;
-import com.ecomarket.usuarios.entity.Usuario;
+import com.ecomarket.usuarios.model.Rol;
+import com.ecomarket.usuarios.model.Usuario;
 import com.ecomarket.usuarios.exception.AccesoNoAutorizadoException;
 import com.ecomarket.usuarios.exception.UsuarioNoEncontradoException;
 import com.ecomarket.usuarios.exception.UsuarioYaExisteException;
@@ -20,7 +21,7 @@ import java.util.Set;
 public class UsuarioInternoService {
 
     private static final String ROL_ADMINISTRADOR = "ADMINISTRADOR";
-    private static final Set<String> ROLES_INTERNOS = Set.of("EMPLEADO", "GERENTE", "ADMINISTRADOR");
+    private static final Set<Rol> ROLES_INTERNOS = Set.of(Rol.EMPLEADO, Rol.GERENTE, Rol.ADMINISTRADOR);
 
     private final UsuarioRepository usuarioRepository;
 
@@ -28,7 +29,7 @@ public class UsuarioInternoService {
         validarPermisoAdministrador(rolSolicitante);
 
         String correoNormalizado = request.getCorreo().trim().toLowerCase();
-        String rolNormalizado = normalizarRolInterno(request.getRol());
+        Rol rolNormalizado = normalizarRolInterno(request.getRol());
 
         if (usuarioRepository.existsByCorreo(correoNormalizado)) {
             throw new UsuarioYaExisteException("Ya existe una cuenta registrada con este correo");
@@ -47,12 +48,17 @@ public class UsuarioInternoService {
         return mapearRespuesta(usuarioRepository.save(usuario));
     }
 
+    public UsuarioInternoResponseDTO obtenerUsuarioInternoPorId(Long id, String rolSolicitante) {
+        validarPermisoAdministrador(rolSolicitante);
+        return mapearRespuesta(buscarUsuarioInternoVigente(id));
+    }
+
     public List<UsuarioInternoResponseDTO> listarUsuariosInternos(String rolSolicitante) {
         validarPermisoAdministrador(rolSolicitante);
 
         return usuarioRepository.findAll()
                 .stream()
-                .filter(usuario -> !"CLIENTE".equalsIgnoreCase(usuario.getRol()))
+                .filter(usuario -> !Rol.CLIENTE.equals(usuario.getRol()))
                 .filter(usuario -> !Boolean.TRUE.equals(usuario.getEliminado()))
                 .map(this::mapearRespuesta)
                 .toList();
@@ -111,7 +117,7 @@ public class UsuarioInternoService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario interno no encontrado"));
 
-        if ("CLIENTE".equalsIgnoreCase(usuario.getRol()) || Boolean.TRUE.equals(usuario.getEliminado())) {
+        if (Rol.CLIENTE.equals(usuario.getRol()) || Boolean.TRUE.equals(usuario.getEliminado())) {
             throw new UsuarioNoEncontradoException("Usuario interno no encontrado");
         }
 
@@ -124,14 +130,18 @@ public class UsuarioInternoService {
         }
     }
 
-    private String normalizarRolInterno(String rol) {
+    private Rol normalizarRolInterno(String rol) {
         String rolNormalizado = rol.trim().toUpperCase();
-
-        if (!ROLES_INTERNOS.contains(rolNormalizado)) {
-            throw new IllegalArgumentException("Rol interno no válido");
+        Rol rolEnum;
+        try {
+            rolEnum = Rol.valueOf(rolNormalizado);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Rol interno no válido: " + rol);
         }
-
-        return rolNormalizado;
+        if (!ROLES_INTERNOS.contains(rolEnum)) {
+            throw new IllegalArgumentException("Rol interno no válido: " + rol);
+        }
+        return rolEnum;
     }
 
     private UsuarioInternoResponseDTO mapearRespuesta(Usuario usuario) {
@@ -139,7 +149,7 @@ public class UsuarioInternoService {
                 .id(usuario.getId())
                 .nombre(usuario.getNombre())
                 .correo(usuario.getCorreo())
-                .rol(usuario.getRol())
+                .rol(usuario.getRol().name())
                 .activo(usuario.getActivo())
                 .eliminado(usuario.getEliminado())
                 .fechaRegistro(usuario.getFechaRegistro())

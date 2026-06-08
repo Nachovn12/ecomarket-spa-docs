@@ -1,7 +1,7 @@
 package com.ecomarket.admin.dto;
 
-import com.ecomarket.admin.entity.EstadoTicket;
-import com.ecomarket.admin.entity.PrioridadTicket;
+import com.ecomarket.admin.model.EstadoTicket;
+import com.ecomarket.admin.model.PrioridadTicket;
 import lombok.Builder;
 import lombok.Getter;
 

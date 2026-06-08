@@ -1,6 +1,6 @@
 package com.ecomarket.admin.repository;
 
-import com.ecomarket.admin.entity.Tienda;
+import com.ecomarket.admin.model.Tienda;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

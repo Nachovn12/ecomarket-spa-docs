@@ -1,6 +1,6 @@
 package com.ecomarket.admin.dto;
 
-import com.ecomarket.admin.entity.PrioridadTicket;
+import com.ecomarket.admin.model.PrioridadTicket;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

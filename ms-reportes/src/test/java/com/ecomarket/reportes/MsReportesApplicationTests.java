@@ -1,9 +1,9 @@
 package com.ecomarket.reportes;
 
-import com.ecomarket.reportes.entity.IndicadorKPI;
-import com.ecomarket.reportes.entity.Reporte;
-import com.ecomarket.reportes.entity.TipoKPI;
-import com.ecomarket.reportes.entity.TipoReporte;
+import com.ecomarket.reportes.model.IndicadorKPI;
+import com.ecomarket.reportes.model.Reporte;
+import com.ecomarket.reportes.model.TipoKPI;
+import com.ecomarket.reportes.model.TipoReporte;
 import com.ecomarket.reportes.exception.ReporteException;
 import com.ecomarket.reportes.repository.IndicadorKPIRepository;
 import com.ecomarket.reportes.repository.ReporteRepository;

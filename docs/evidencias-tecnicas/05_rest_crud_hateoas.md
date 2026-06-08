@@ -195,7 +195,7 @@ La HU-3 mantiene separación por capas:
 | Controller | `UsuarioController`      | Recibe solicitudes REST y construye respuestas HATEOAS |
 | Service    | `UsuarioService`         | Contiene lógica de negocio                             |
 | Repository | `UsuarioRepository`      | Accede a la base de datos mediante JPA                 |
-| Entity     | `Usuario`                | Representa la tabla `usuarios`                         |
+| Model      | `Usuario`                | Clase persistente JPA que representa la tabla `usuarios` |
 | DTO        | DTOs de usuario/perfil   | Transporta datos de entrada y salida                   |
 | Exception  | `GlobalExceptionHandler` | Maneja errores de forma centralizada                   |
 
@@ -226,7 +226,7 @@ La entidad `Usuario` se persiste mediante JPA/Hibernate.
 Archivo:
 
 ```text
-ms-usuarios-identidad/src/main/java/com/ecomarket/usuarios/entity/Usuario.java
+ms-usuarios-identidad/src/main/java/com/ecomarket/usuarios/model/Usuario.java
 ```
 
 Campos agregados para HU-3:

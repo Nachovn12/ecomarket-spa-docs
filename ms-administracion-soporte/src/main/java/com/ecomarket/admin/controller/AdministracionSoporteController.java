@@ -1,7 +1,7 @@
 package com.ecomarket.admin.controller;
 
 import com.ecomarket.admin.dto.*;
-import com.ecomarket.admin.entity.EstadoTicket;
+import com.ecomarket.admin.model.EstadoTicket;
 import com.ecomarket.admin.service.AdministracionSoporteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

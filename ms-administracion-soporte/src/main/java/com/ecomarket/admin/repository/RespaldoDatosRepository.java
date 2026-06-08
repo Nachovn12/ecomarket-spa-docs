@@ -1,6 +1,6 @@
 package com.ecomarket.admin.repository;
 
-import com.ecomarket.admin.entity.RespaldoDatos;
+import com.ecomarket.admin.model.RespaldoDatos;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -14,11 +14,15 @@ import org.springframework.test.context.TestPropertySource;
 		"spring.jpa.show-sql=false",
 		"spring.jpa.properties.hibernate.format_sql=false",
 		"spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect",
-		"spring.sql.init.mode=never"
+		"spring.sql.init.mode=never",
+		"ms.usuarios.url=http://localhost:8083"
 })
 class MsAdministracionSoporteApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// Verifica que el contexto de Spring carga correctamente.
+		// UsuarioInternoClientService usa RestTemplate pero no realiza
+		// llamadas HTTP durante el arranque, por lo que el test es seguro.
 	}
 }

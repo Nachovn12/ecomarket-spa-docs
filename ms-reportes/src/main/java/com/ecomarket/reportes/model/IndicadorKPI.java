@@ -1,13 +1,16 @@
 package com.ecomarket.reportes.model;
 
-
-import lombok.Setter;
-import lombok.NoArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
+/**
+ * Entidad JPA de Indicador KPI.
+ * Almacena los valores calculados por tipo de KPI para consulta en reportes.
+ * Las validaciones de entrada se gestionan directamente en el controller con @Valid sobre la entidad.
+ */
 @Entity
 @Table(name = "indicadores_kpi")
 @Getter
@@ -19,17 +22,14 @@ public class IndicadorKPI {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "El tipo de KPI es obligatorio")
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private TipoKPI tipo;
 
-    @NotNull(message = "El valor del KPI es obligatorio")
-    @PositiveOrZero(message = "El valor del KPI no puede ser negativo")
     @Column(nullable = false)
     private Double valor;
 
-    @Size(max = 255, message = "La descripción no puede superar los 255 caracteres")
+    @Column(length = 255)
     private String descripcion;
 
     private LocalDateTime fechaCalculo;

@@ -1,15 +1,16 @@
 package com.ecomarket.logistica.model;
 
-
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.Getter;
 import com.ecomarket.logistica.model.enums.EstadoEnvio;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.time.LocalDateTime;
 
+/**
+ * Entidad JPA de Envío.
+ * Las validaciones de entrada se gestionan en EnvioDTO y CambioEstadoRequestDTO.
+ */
 @Entity
 @Table(name = "envios")
 @Getter
@@ -21,40 +22,37 @@ public class Envio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "El ID del pedido es obligatorio")
     @Column(nullable = false)
     private Long idPedido;
 
-    @NotBlank(message = "El origen es obligatorio")
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
     private String origen;
 
-    @NotBlank(message = "El destino es obligatorio")
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
     private String destino;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private EstadoEnvio estado = EstadoEnvio.PREPARADO;
 
     private String ubicacionActual;
     private String observacion;
     private String motivoIncidencia;
 
-    private LocalDateTime fechaCreacion;
-
-    @NotNull(message = "La fecha estimada de entrega es obligatoria")
+    @Column(nullable = false)
     private LocalDateTime fechaEstimadaEntrega;
 
+    private LocalDateTime fechaCreacion;
     private LocalDateTime fechaActualizacion;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "proveedor_id")
     private Proveedor proveedor;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ruta_entrega_id")
     private RutaEntrega rutaEntrega;
+
     @PrePersist
     protected void onCreate() {
         this.fechaCreacion = LocalDateTime.now();

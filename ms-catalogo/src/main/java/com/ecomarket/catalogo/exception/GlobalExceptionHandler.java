@@ -1,37 +1,80 @@
 package com.ecomarket.catalogo.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Object> handleNotFound(ResourceNotFoundException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Map<String, Object>> handleNotFound(ResourceNotFoundException ex,
+                                                               HttpServletRequest req) {
+        log.warn("Recurso no encontrado: {} - path: {}", ex.getMessage(), req.getRequestURI());
+        return buildResponse(HttpStatus.NOT_FOUND, "Not Found", ex.getMessage(), req.getRequestURI());
     }
 
     @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<Object> handleConflict(ConflictException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    public ResponseEntity<Map<String, Object>> handleConflict(ConflictException ex,
+                                                               HttpServletRequest req) {
+        log.warn("Conflicto de datos: {} - path: {}", ex.getMessage(), req.getRequestURI());
+        return buildResponse(HttpStatus.CONFLICT, "Conflict", ex.getMessage(), req.getRequestURI());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex,
+                                                                      HttpServletRequest req) {
+        log.warn("Argumento inválido: {} - path: {}", ex.getMessage(), req.getRequestURI());
+        return buildResponse(HttpStatus.BAD_REQUEST, "Bad Request", ex.getMessage(), req.getRequestURI());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex,
+                                                                 HttpServletRequest req) {
+        Map<String, String> errores = new HashMap<>();
+        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
+            errores.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+        log.warn("Error de validación en path: {} - campos: {}", req.getRequestURI(), errores);
+        Map<String, Object> body = buildBodyMap(HttpStatus.BAD_REQUEST, "Validation Error",
+                "Error de validación en los campos enviados", req.getRequestURI());
+        body.put("validaciones", errores);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleGeneralException(Exception ex) {
+    public ResponseEntity<Map<String, Object>> handleGeneralException(Exception ex,
+                                                                       HttpServletRequest req) {
+        log.error("Error interno no controlado - path: {}", req.getRequestURI(), ex);
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error",
+                "Error interno en el servidor", req.getRequestURI());
+    }
+
+    private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String error,
+                                                               String message, String path) {
+        return ResponseEntity.status(status).body(buildBodyMap(status, error, message, path));
+    }
+
+    private Map<String, Object> buildBodyMap(HttpStatus status, String error,
+                                              String message, String path) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
-        body.put("message", "Error interno en el servidor: " + ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+        body.put("status", status.value());
+        body.put("error", error);
+        body.put("message", message);
+        body.put("path", path);
+        return body;
     }
 }

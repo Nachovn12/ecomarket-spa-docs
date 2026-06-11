@@ -1,14 +1,17 @@
 package com.ecomarket.reportes.model;
 
-
-import lombok.Setter;
-import lombok.NoArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Entidad JPA de Reporte generado.
+ * Registra los reportes producidos con sus metadatos (tipo, tienda, rango de fechas).
+ * Las validaciones de entrada se gestionan en ReporteFiltroRequestDTO.
+ */
 @Entity
 @Table(name = "reportes")
 @Getter
@@ -20,12 +23,10 @@ public class Reporte {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "El tipo de reporte es obligatorio")
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private TipoReporte tipo;
 
-    @Positive(message = "El id de tienda debe ser positivo")
     private Long idTienda;
 
     private LocalDate fechaInicio;
@@ -33,9 +34,10 @@ public class Reporte {
     private LocalDate fechaFin;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 10)
     private FormatoExportacion formatoExportacion;
 
-    @Size(max = 100, message = "El usuario generador no puede superar los 100 caracteres")
+    @Column(length = 100)
     private String generadoPor;
 
     private LocalDateTime fechaGeneracion;

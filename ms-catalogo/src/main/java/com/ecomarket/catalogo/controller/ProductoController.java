@@ -1,8 +1,9 @@
 package com.ecomarket.catalogo.controller;
 
-import com.ecomarket.catalogo.model.Producto;
+import com.ecomarket.catalogo.dto.ProductoRequestDTO;
+import com.ecomarket.catalogo.dto.ProductoResponseDTO;
 import com.ecomarket.catalogo.service.CatalogoService;
-import com.ecomarket.catalogo.exception.ResourceNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -10,13 +11,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+/**
+ * Controller de Productos del catálogo.
+ * Patrón CSR: recibe la petición HTTP, delega al Service y retorna ResponseEntity.
+ */
 @RestController
 @RequestMapping("/api/productos")
 public class ProductoController {
@@ -25,51 +29,49 @@ public class ProductoController {
     private CatalogoService catalogoService;
 
     @PostMapping
-    public ResponseEntity<EntityModel<Producto>> crear(@Valid @RequestBody Producto producto) {
-        Producto guardado = catalogoService.guardarProducto(producto);
-        return new ResponseEntity<>(ensamblarResource(guardado), HttpStatus.CREATED);
+    public ResponseEntity<EntityModel<ProductoResponseDTO>> crear(
+            @Valid @RequestBody ProductoRequestDTO dto) {
+        ProductoResponseDTO creado = catalogoService.crearProducto(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ensamblarResource(creado));
     }
 
     @GetMapping
-    public ResponseEntity<CollectionModel<EntityModel<Producto>>> listarTodos() {
-        List<Producto> productos = catalogoService.obtenerTodosProductos();
-        return ResponseEntity.ok(ensamblarCollection(productos));
+    public ResponseEntity<CollectionModel<EntityModel<ProductoResponseDTO>>> listarTodos() {
+        List<EntityModel<ProductoResponseDTO>> productos = catalogoService.obtenerTodosProductos().stream()
+                .map(this::ensamblarResource)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(CollectionModel.of(productos,
+                linkTo(methodOn(ProductoController.class).listarTodos()).withSelfRel()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<Producto>> buscarPorId(@PathVariable Long id) {
-        Producto producto = catalogoService.obtenerProductoPorId(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+    public ResponseEntity<EntityModel<ProductoResponseDTO>> buscarPorId(@PathVariable Long id) {
+        ProductoResponseDTO producto = catalogoService.obtenerProductoPorId(id);
         return ResponseEntity.ok(ensamblarResource(producto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<Producto>> actualizar(@PathVariable Long id,
-            @Valid @RequestBody Producto producto) {
-        catalogoService.obtenerProductoPorId(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
-        producto.setIdProducto(id);
-        Producto actualizado = catalogoService.guardarProducto(producto);
+    public ResponseEntity<EntityModel<ProductoResponseDTO>> actualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductoRequestDTO dto) {
+        ProductoResponseDTO actualizado = catalogoService.actualizarProducto(id, dto);
         return ResponseEntity.ok(ensamblarResource(actualizado));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        catalogoService.obtenerProductoPorId(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con ID: " + id));
         catalogoService.eliminarProducto(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/buscar")
-    public ResponseEntity<CollectionModel<EntityModel<Producto>>> buscar(
+    public ResponseEntity<CollectionModel<EntityModel<ProductoResponseDTO>>> buscar(
             @RequestParam(required = false) String palabraClave,
             @RequestParam(required = false) Long idCategoria,
             @RequestParam(required = false) Double precioMinimo,
             @RequestParam(required = false) Double precioMaximo) {
 
-        List<Producto> resultados;
-
+        List<ProductoResponseDTO> resultados;
         if (palabraClave != null) {
             resultados = catalogoService.buscarPorPalabraClave(palabraClave);
         } else if (idCategoria != null) {
@@ -80,27 +82,24 @@ public class ProductoController {
             resultados = catalogoService.obtenerTodosProductos();
         }
 
-        return ResponseEntity.ok(ensamblarCollection(resultados));
+        List<EntityModel<ProductoResponseDTO>> recursos = resultados.stream()
+                .map(this::ensamblarResource).collect(Collectors.toList());
+        return ResponseEntity.ok(CollectionModel.of(recursos,
+                linkTo(methodOn(ProductoController.class).listarTodos()).withRel("productos")));
     }
 
     @GetMapping("/ecologicos")
-    public ResponseEntity<CollectionModel<EntityModel<Producto>>> buscarEcologicos(
+    public ResponseEntity<CollectionModel<EntityModel<ProductoResponseDTO>>> buscarEcologicos(
             @RequestParam(defaultValue = "biodegradable") String atributoEcologico) {
-        List<Producto> resultados = catalogoService.buscarEcologicos(atributoEcologico);
-        return ResponseEntity.ok(ensamblarCollection(resultados));
+        List<EntityModel<ProductoResponseDTO>> recursos = catalogoService.buscarEcologicos(atributoEcologico)
+                .stream().map(this::ensamblarResource).collect(Collectors.toList());
+        return ResponseEntity.ok(CollectionModel.of(recursos,
+                linkTo(methodOn(ProductoController.class).listarTodos()).withRel("productos")));
     }
 
-    private EntityModel<Producto> ensamblarResource(Producto producto) {
-        return EntityModel.of(producto,
-                linkTo(methodOn(ProductoController.class).buscarPorId(producto.getIdProducto())).withSelfRel(),
+    private EntityModel<ProductoResponseDTO> ensamblarResource(ProductoResponseDTO dto) {
+        return EntityModel.of(dto,
+                linkTo(methodOn(ProductoController.class).buscarPorId(dto.getIdProducto())).withSelfRel(),
                 linkTo(methodOn(ProductoController.class).listarTodos()).withRel("productos"));
-    }
-
-    private CollectionModel<EntityModel<Producto>> ensamblarCollection(List<Producto> productos) {
-        List<EntityModel<Producto>> productosResource = productos.stream()
-                .map(this::ensamblarResource)
-                .collect(Collectors.toList());
-        return CollectionModel.of(productosResource,
-                linkTo(methodOn(ProductoController.class).listarTodos()).withSelfRel());
     }
 }

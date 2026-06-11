@@ -1,8 +1,9 @@
 package com.ecomarket.catalogo.controller;
 
-import com.ecomarket.catalogo.model.Categoria;
+import com.ecomarket.catalogo.dto.CategoriaRequestDTO;
+import com.ecomarket.catalogo.dto.CategoriaResponseDTO;
 import com.ecomarket.catalogo.service.CatalogoService;
-import com.ecomarket.catalogo.exception.ResourceNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -10,13 +11,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+/**
+ * Controller de Categorías del catálogo.
+ * Patrón CSR: recibe petición HTTP, delega al Service, retorna ResponseEntity con DTO.
+ */
 @RestController
 @RequestMapping("/api/categorias")
 public class CategoriaController {
@@ -25,55 +29,44 @@ public class CategoriaController {
     private CatalogoService catalogoService;
 
     @PostMapping
-    public ResponseEntity<EntityModel<Categoria>> crearCategoria(@Valid @RequestBody Categoria categoria) {
-        Categoria nueva = catalogoService.guardarCategoria(categoria);
-        return new ResponseEntity<>(ensamblarResource(nueva), HttpStatus.CREATED);
+    public ResponseEntity<EntityModel<CategoriaResponseDTO>> crearCategoria(
+            @Valid @RequestBody CategoriaRequestDTO dto) {
+        CategoriaResponseDTO creada = catalogoService.crearCategoria(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ensamblarResource(creada));
     }
 
     @GetMapping
-    public ResponseEntity<CollectionModel<EntityModel<Categoria>>> listarCategorias() {
-        List<Categoria> categorias = catalogoService.obtenerTodasCategorias();
-        return ResponseEntity.ok(ensamblarCollection(categorias));
+    public ResponseEntity<CollectionModel<EntityModel<CategoriaResponseDTO>>> listarCategorias() {
+        List<EntityModel<CategoriaResponseDTO>> categorias = catalogoService.obtenerTodasCategorias().stream()
+                .map(this::ensamblarResource)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(CollectionModel.of(categorias,
+                linkTo(methodOn(CategoriaController.class).listarCategorias()).withSelfRel()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<Categoria>> obtenerCategoriaPorId(@PathVariable Long id) {
-        Categoria categoria = catalogoService.obtenerCategoriaPorId(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con ID: " + id));
+    public ResponseEntity<EntityModel<CategoriaResponseDTO>> obtenerCategoriaPorId(@PathVariable Long id) {
+        CategoriaResponseDTO categoria = catalogoService.obtenerCategoriaPorId(id);
         return ResponseEntity.ok(ensamblarResource(categoria));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<Categoria>> actualizarCategoria(@PathVariable Long id, @Valid @RequestBody Categoria categoria) {
-        Categoria existente = catalogoService.obtenerCategoriaPorId(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con ID: " + id));
-        
-        existente.setNombre(categoria.getNombre());
-        existente.setEstado(categoria.getEstado());
-        
-        Categoria actualizada = catalogoService.guardarCategoria(existente);
+    public ResponseEntity<EntityModel<CategoriaResponseDTO>> actualizarCategoria(
+            @PathVariable Long id,
+            @Valid @RequestBody CategoriaRequestDTO dto) {
+        CategoriaResponseDTO actualizada = catalogoService.actualizarCategoria(id, dto);
         return ResponseEntity.ok(ensamblarResource(actualizada));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarCategoria(@PathVariable Long id) {
-        catalogoService.obtenerCategoriaPorId(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con ID: " + id));
         catalogoService.eliminarCategoria(id);
         return ResponseEntity.noContent().build();
     }
 
-    private EntityModel<Categoria> ensamblarResource(Categoria categoria) {
-        return EntityModel.of(categoria,
-                linkTo(methodOn(CategoriaController.class).obtenerCategoriaPorId(categoria.getIdCategoria())).withSelfRel(),
+    private EntityModel<CategoriaResponseDTO> ensamblarResource(CategoriaResponseDTO dto) {
+        return EntityModel.of(dto,
+                linkTo(methodOn(CategoriaController.class).obtenerCategoriaPorId(dto.getIdCategoria())).withSelfRel(),
                 linkTo(methodOn(CategoriaController.class).listarCategorias()).withRel("categorias"));
-    }
-
-    private CollectionModel<EntityModel<Categoria>> ensamblarCollection(List<Categoria> categorias) {
-        List<EntityModel<Categoria>> categoriasResource = categorias.stream()
-                .map(this::ensamblarResource)
-                .collect(Collectors.toList());
-        return CollectionModel.of(categoriasResource,
-                linkTo(methodOn(CategoriaController.class).listarCategorias()).withSelfRel());
     }
 }

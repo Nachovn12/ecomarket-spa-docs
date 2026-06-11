@@ -57,7 +57,7 @@ public class EnvioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<Envio>> actualizar(@PathVariable Long id, @RequestBody EnvioDTO dto) {
+    public ResponseEntity<EntityModel<Envio>> actualizar(@PathVariable Long id, @Valid @RequestBody EnvioDTO dto) {
         return ResponseEntity.ok(ensamblar(logisticaService.actualizarEnvio(id, dto)));
     }
 

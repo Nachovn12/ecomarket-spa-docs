@@ -53,20 +53,20 @@ public class ProveedorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<Proveedor>> actualizar(@PathVariable Long id, @RequestBody ProveedorDTO dto) {
+    public ResponseEntity<EntityModel<Proveedor>> actualizar(@PathVariable Long id, @Valid @RequestBody ProveedorDTO dto) {
         return ResponseEntity.ok(ensamblar(logisticaService.actualizarProveedor(id, dto)));
     }
 
     @PatchMapping("/{id}/activar")
     public ResponseEntity<Void> activar(@PathVariable Long id) {
         logisticaService.activarProveedor(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/desactivar")
     public ResponseEntity<Void> desactivar(@PathVariable Long id) {
         logisticaService.desactivarProveedor(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/activos")

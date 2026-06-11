@@ -1,15 +1,15 @@
 package com.ecomarket.catalogo.model;
 
-
-import lombok.Setter;
-import lombok.NoArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+/**
+ * Entidad JPA del Producto del catálogo.
+ * Las validaciones de entrada se gestionan en ProductoRequestDTO.
+ */
 @Entity
 @Table(name = "productos")
 @Getter
@@ -21,16 +21,12 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idProducto;
 
-    @NotBlank
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 50)
     private String sku;
 
-    @NotBlank
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
     private String nombre;
 
-    @NotNull
-    @DecimalMin("0.0")
     @Column(nullable = false)
     private Double precio;
 
@@ -41,10 +37,10 @@ public class Producto {
     private String descripcionEcologica;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private EstadoProducto estado = EstadoProducto.PUBLICADO;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_categoria")
     private Categoria categoria;
 

@@ -1,7 +1,14 @@
 package com.ecomarket.reportes.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalDateTime;
 
+/**
+ * DTO de salida para exponer datos de un IndicadorKPI sin exponer la entidad JPA.
+ */
+@Getter
+@Setter
 public class IndicadorKPIResponseDTO {
 
     private Long id;
@@ -9,19 +16,4 @@ public class IndicadorKPIResponseDTO {
     private Double valor;
     private String descripcion;
     private LocalDateTime fechaCalculo;
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
-
-    public Double getValor() { return valor; }
-    public void setValor(Double valor) { this.valor = valor; }
-
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-
-    public LocalDateTime getFechaCalculo() { return fechaCalculo; }
-    public void setFechaCalculo(LocalDateTime fechaCalculo) { this.fechaCalculo = fechaCalculo; }
 }

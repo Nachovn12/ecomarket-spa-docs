@@ -1,68 +1,84 @@
 package com.ecomarket.logistica.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Manejador centralizado de excepciones para ms-logistica-envios.
+ * Retorna respuestas JSON estructuradas con timestamp, status, error, message y path.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleResourceNotFound(ResourceNotFoundException ex) {
-        log.warn("ResourceNotFoundException capturada: {}", ex.getMessage());
-        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    public ResponseEntity<Map<String, Object>> handleResourceNotFound(
+            ResourceNotFoundException ex, HttpServletRequest req) {
+        log.warn("Recurso no encontrado: {} - path: {}", ex.getMessage(), req.getRequestURI());
+        return buildResponse(HttpStatus.NOT_FOUND, "Not Found", ex.getMessage(), req.getRequestURI());
     }
 
     @ExceptionHandler(ConflictoNegocioException.class)
-    public ResponseEntity<Map<String, Object>> handleConflictoNegocio(ConflictoNegocioException ex) {
-        log.warn("ConflictoNegocioException capturada: {}", ex.getMessage());
-        return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
+    public ResponseEntity<Map<String, Object>> handleConflictoNegocio(
+            ConflictoNegocioException ex, HttpServletRequest req) {
+        log.warn("Conflicto de negocio: {} - path: {}", ex.getMessage(), req.getRequestURI());
+        return buildResponse(HttpStatus.CONFLICT, "Conflict", ex.getMessage(), req.getRequestURI());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
-        log.warn("IllegalArgumentException capturada: {}", ex.getMessage());
-        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    public ResponseEntity<Map<String, Object>> handleIllegalArgument(
+            IllegalArgumentException ex, HttpServletRequest req) {
+        log.warn("Argumento inválido: {} - path: {}", ex.getMessage(), req.getRequestURI());
+        return buildResponse(HttpStatus.BAD_REQUEST, "Bad Request", ex.getMessage(), req.getRequestURI());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        log.warn("MethodArgumentNotValidException capturada: fallo en validación de campos");
-        Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", LocalDateTime.now());
-        response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("error", "Bad Request");
-        
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> 
-            errors.put(error.getField(), error.getDefaultMessage()));
-        response.put("message", errors);
-        
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
+            MethodArgumentNotValidException ex, HttpServletRequest req) {
+        Map<String, String> errores = new LinkedHashMap<>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errores.put(error.getField(), error.getDefaultMessage());
+        }
+        log.warn("Error de validación en path: {} - campos: {}", req.getRequestURI(), errores);
+        Map<String, Object> body = buildBodyMap(HttpStatus.BAD_REQUEST, "Validation Error",
+                "Error de validación en los campos enviados", req.getRequestURI());
+        body.put("validaciones", errores);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGeneralException(Exception ex) {
-        log.error("Error interno del servidor capturado: ", ex);
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor: " + ex.getMessage());
+    public ResponseEntity<Map<String, Object>> handleGeneralException(
+            Exception ex, HttpServletRequest req) {
+        log.error("Error interno no controlado - path: {}", req.getRequestURI(), ex);
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error",
+                "Error interno en el servidor", req.getRequestURI());
     }
 
-    private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String message) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", LocalDateTime.now());
-        response.put("status", status.value());
-        response.put("error", status.getReasonPhrase());
-        response.put("message", message);
-        return new ResponseEntity<>(response, status);
+    private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String error,
+                                                               String message, String path) {
+        return ResponseEntity.status(status).body(buildBodyMap(status, error, message, path));
+    }
+
+    private Map<String, Object> buildBodyMap(HttpStatus status, String error,
+                                              String message, String path) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", status.value());
+        body.put("error", error);
+        body.put("message", message);
+        body.put("path", path);
+        return body;
     }
 }

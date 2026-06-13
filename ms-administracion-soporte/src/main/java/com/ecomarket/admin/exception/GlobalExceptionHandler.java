@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -73,6 +75,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(crearBody(HttpStatus.BAD_REQUEST, "Parámetro inválido",
                         mensaje, req.getRequestURI()));
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDataIntegrity(DataIntegrityViolationException ex,
+                                                                   HttpServletRequest req) {
+        log.warn("Conflicto de integridad de datos - path: {}", req.getRequestURI());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(crearBody(HttpStatus.CONFLICT, "Conflict",
+                "Violacion de integridad de datos: registro duplicado o referencia invalida", req.getRequestURI()));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> handleNotReadable(HttpMessageNotReadableException ex,
+                                                                  HttpServletRequest req) {
+        log.warn("Cuerpo de la peticion no legible o invalido - path: {}", req.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(crearBody(HttpStatus.BAD_REQUEST, "Bad Request",
+                "El cuerpo de la peticion esta vacio, malformado o no es JSON valido", req.getRequestURI()));
     }
 
     @ExceptionHandler(Exception.class)

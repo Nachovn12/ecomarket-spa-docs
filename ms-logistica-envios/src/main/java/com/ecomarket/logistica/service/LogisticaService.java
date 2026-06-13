@@ -5,6 +5,11 @@ import com.ecomarket.logistica.exception.*;
 import com.ecomarket.logistica.model.*;
 import com.ecomarket.logistica.model.enums.*;
 import com.ecomarket.logistica.repository.*;
+import com.ecomarket.logistica.util.EtaCalculator;
+import com.ecomarket.logistica.dto.EnvioResponse;
+import com.ecomarket.logistica.dto.ProveedorResponse;
+import com.ecomarket.logistica.dto.RutaEntregaResponse;
+import com.ecomarket.logistica.dto.SeguimientoEnvioResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -30,22 +35,29 @@ public class LogisticaService {
         this.seguimientoEnvioRepository = seguimientoEnvioRepository;
     }
 
-    // ==========================================
-    // LOGICA DE ENVIOS Y SEGUIMIENTOS
-    // ==========================================
+    // Logica de envios y seguimientos
     @Transactional
     public Envio crearEnvio(EnvioDTO dto) {
         if (dto.getIdPedido() == null) throw new IllegalArgumentException("No se puede crear Envio sin idPedido");
         if (dto.getOrigen() == null || dto.getOrigen().isBlank()) throw new IllegalArgumentException("No se puede crear Envio sin origen");
         if (dto.getDestino() == null || dto.getDestino().isBlank()) throw new IllegalArgumentException("No se puede crear Envio sin destino");
-        if (dto.getFechaEstimadaEntrega() == null) throw new IllegalArgumentException("No se puede crear Envio sin fecha estimada de entrega");
 
         Envio envio = new Envio();
         envio.setIdPedido(dto.getIdPedido());
         envio.setOrigen(dto.getOrigen());
         envio.setDestino(dto.getDestino());
-        envio.setFechaEstimadaEntrega(dto.getFechaEstimadaEntrega());
         envio.setEstado(EstadoEnvio.PREPARADO);
+
+        if (dto.getFechaEstimadaEntrega() != null) {
+            envio.setFechaEstimadaEntrega(dto.getFechaEstimadaEntrega());
+        } else {
+            Proveedor prov = null;
+            if (dto.getProveedorId() != null) {
+                prov = proveedorRepository.findById(dto.getProveedorId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Proveedor informado no existe"));
+            }
+            envio.setFechaEstimadaEntrega(EtaCalculator.calcular(dto.getOrigen(), dto.getDestino(), prov, java.time.LocalDateTime.now()));
+        }
 
         if (dto.getProveedorId() != null) {
             Proveedor proveedor = proveedorRepository.findById(dto.getProveedorId())
@@ -60,7 +72,7 @@ public class LogisticaService {
         envio = envioRepository.save(envio);
         log.info("Envio creado exitosamente con ID: {}", envio.getId());
         registrarSeguimiento(envio, EstadoEnvio.PREPARADO, "Envio creado y en preparacion", "Sistema");
-        
+
         return envio;
     }
 
@@ -135,9 +147,7 @@ public class LogisticaService {
         seguimientoEnvioRepository.save(seguimiento);
     }
 
-    // ==========================================
-    // LOGICA DE PROVEEDORES
-    // ==========================================
+    // Logica de proveedores
     @Transactional
     public Proveedor crearProveedor(ProveedorDTO dto) {
         Proveedor prov = new Proveedor();
@@ -192,9 +202,7 @@ public class LogisticaService {
         return proveedorRepository.findByTipoProveedorAndCobertura(tipo, cobertura);
     }
 
-    // ==========================================
-    // LOGICA DE RUTAS DE ENTREGA
-    // ==========================================
+    // Logica de rutas de entrega
     @Transactional
     public RutaEntrega crearRuta(RutaEntregaDTO dto) {
         RutaEntrega ruta = new RutaEntrega();
@@ -246,5 +254,63 @@ public class LogisticaService {
         ruta = rutaEntregaRepository.save(ruta);
         log.info("Ruta {} cambio al estado {}", id, nuevoEstado);
         return ruta;
+    }
+
+
+    public EnvioResponse toResponse(Envio envio) {
+        if (envio == null) return null;
+        EnvioResponse r = new EnvioResponse();
+        r.setId(envio.getId());
+        r.setIdPedido(envio.getIdPedido());
+        r.setOrigen(envio.getOrigen());
+        r.setDestino(envio.getDestino());
+        r.setEstado(envio.getEstado());
+        r.setUbicacionActual(envio.getUbicacionActual());
+        r.setObservacion(envio.getObservacion());
+        r.setMotivoIncidencia(envio.getMotivoIncidencia());
+        r.setFechaEstimadaEntrega(envio.getFechaEstimadaEntrega());
+        r.setFechaCreacion(envio.getFechaCreacion());
+        r.setFechaActualizacion(envio.getFechaActualizacion());
+        r.setProveedorId(envio.getProveedor() != null ? envio.getProveedor().getId() : null);
+        r.setRutaEntregaId(envio.getRutaEntrega() != null ? envio.getRutaEntrega().getId() : null);
+        return r;
+    }
+
+    public ProveedorResponse toResponse(Proveedor proveedor) {
+        if (proveedor == null) return null;
+        ProveedorResponse r = new ProveedorResponse();
+        r.setId(proveedor.getId());
+        r.setRazonSocial(proveedor.getRazonSocial());
+        r.setRut(proveedor.getRut());
+        r.setContacto(proveedor.getContacto());
+        r.setEmail(proveedor.getEmail());
+        r.setTelefono(proveedor.getTelefono());
+        r.setTipoProveedor(proveedor.getTipoProveedor());
+        r.setCobertura(proveedor.getCobertura());
+        r.setActivo(proveedor.getActivo());
+        r.setFechaCreacion(proveedor.getFechaRegistro());
+        return r;
+    }
+
+    public RutaEntregaResponse toResponse(RutaEntrega ruta) {
+        if (ruta == null) return null;
+        RutaEntregaResponse r = new RutaEntregaResponse();
+        r.setId(ruta.getId());
+        r.setEstado(ruta.getEstado());
+        r.setFechaCreacion(ruta.getFechaCreacion());
+        return r;
+    }
+
+    public SeguimientoEnvioResponse toResponse(SeguimientoEnvio seg) {
+        if (seg == null) return null;
+        SeguimientoEnvioResponse r = new SeguimientoEnvioResponse();
+        r.setId(seg.getId());
+        r.setIdEnvio(seg.getEnvio() != null ? seg.getEnvio().getId() : null);
+        r.setEstado(seg.getEstado());
+        r.setUbicacion(seg.getUbicacion());
+        r.setObservacion(seg.getObservacion());
+        r.setActualizadoPor(seg.getActualizadoPor());
+        r.setFecha(seg.getFechaRegistro());
+        return r;
     }
 }

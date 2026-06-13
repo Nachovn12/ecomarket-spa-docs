@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 
 /**
  * Servicio principal del catálogo.
- * Contiene toda la lógica de negocio para Productos, Categorías y Reseñas.
- * Patrón CSR: Controller → Service → Repository.
+ * Contiene toda la lógica de negocio para productos, categorías y reseñas.
+ * Patrón CSR: Controller → service → repository.
  */
 @Service
 public class CatalogoService {
@@ -35,9 +35,7 @@ public class CatalogoService {
     @Autowired
     private ResenaRepository resenaRepository;
 
-    // =========================================================================
-    // PRODUCTOS
-    // =========================================================================
+    // Productos
 
     @Transactional
     public ProductoResponseDTO crearProducto(ProductoRequestDTO dto) {
@@ -159,9 +157,7 @@ public class CatalogoService {
                 .stream().map(this::mapearProducto).collect(Collectors.toList());
     }
 
-    // =========================================================================
     // CATEGORÍAS
-    // =========================================================================
 
     @Transactional
     public CategoriaResponseDTO crearCategoria(CategoriaRequestDTO dto) {
@@ -230,9 +226,7 @@ public class CatalogoService {
         log.info("Categoría eliminada correctamente. idCategoria={}", id);
     }
 
-    // =========================================================================
     // RESEÑAS
-    // =========================================================================
 
     @Transactional
     public ResenaResponseDTO crearResena(ResenaRequestDTO dto) {
@@ -279,9 +273,7 @@ public class CatalogoService {
         log.info("Reseña eliminada correctamente. idResena={}", id);
     }
 
-    // =========================================================================
-    // Métodos privados de mapeo Entity → DTO
-    // =========================================================================
+    // Métodos privados de mapeo entity → DTO
 
     private ProductoResponseDTO mapearProducto(Producto p) {
         ProductoResponseDTO dto = new ProductoResponseDTO();

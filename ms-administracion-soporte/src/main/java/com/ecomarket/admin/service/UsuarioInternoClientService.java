@@ -16,9 +16,9 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 /**
- * Cliente REST para comunicación con MS Usuarios e Identidad.
+ * Cliente REST para comunicación con MS usuarios e identidad.
  * Valida que un usuario interno exista antes de asignarlo a una tienda (IE 2.4.1).
- * Incluye manejo de timeout (configurado en RestTemplateConfig) y errores remotos.
+ * Incluye manejo de timeout (configurado en resttemplateconfig) y errores remotos.
  */
 @Service
 @RequiredArgsConstructor
@@ -32,8 +32,8 @@ public class UsuarioInternoClientService {
     private String msUsuariosUrl;
 
     /**
-     * Valida que el usuario interno exista y esté activo en MS Usuarios e Identidad.
-     * Llama a: GET /api/usuarios/internos/{id} con cabecera X-Rol-Usuario: ADMINISTRADOR
+     * Valida que el usuario interno exista y esté activo en MS usuarios e identidad.
+     * Llama a: GET /api/usuarios/internos/{id} con cabecera X-Rol-Usuario: administrador
      *
      * @param idUsuarioInterno ID del usuario a validar
      * @throws RecursoNoEncontradoException  si el usuario no existe (HTTP 404)

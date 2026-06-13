@@ -21,8 +21,8 @@ class MsAdministracionSoporteApplicationTests {
 
 	@Test
 	void contextLoads() {
-		// Verifica que el contexto de Spring carga correctamente.
+		// Verifica que el contexto de spring carga correctamente.
 		// UsuarioInternoClientService usa RestTemplate pero no realiza
-		// llamadas HTTP durante el arranque, por lo que el test es seguro.
+		// Llamadas HTTP durante el arranque, por lo que el test es seguro.
 	}
 }

@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,7 +18,7 @@ import java.util.Map;
 
 /**
  * Manejador centralizado de excepciones para ms-reportes.
- * ReporteNotFoundException → 404, ReporteException → 400, resto → 500.
+ * ReporteNotFoundException → 404, reporteexception → 400, resto → 500.
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -49,6 +51,21 @@ public class GlobalExceptionHandler {
                 "Error de validación en los campos enviados", req.getRequestURI());
         body.put("validaciones", errores);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDataIntegrity(DataIntegrityViolationException ex,
+                                                                   HttpServletRequest req) {
+        log.warn("Conflicto de integridad de datos - path: {}", req.getRequestURI());
+        return buildResponse(HttpStatus.CONFLICT, "Conflict",
+                "Violacion de integridad de datos: registro duplicado o referencia invalida", req.getRequestURI());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> handleNotReadable(HttpMessageNotReadableException ex,
+                                                                  HttpServletRequest req) {
+        log.warn("Cuerpo de la peticion no legible o invalido - path: {}", req.getRequestURI());
+        return buildResponse(HttpStatus.BAD_REQUEST, "Bad Request",
+                "El cuerpo de la peticion esta vacio, malformado o no es JSON valido", req.getRequestURI());
     }
 
     @ExceptionHandler(Exception.class)

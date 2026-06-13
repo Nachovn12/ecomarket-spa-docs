@@ -5,6 +5,7 @@ import com.ecomarket.reportes.model.Reporte;
 import com.ecomarket.reportes.model.TipoKPI;
 import com.ecomarket.reportes.model.TipoReporte;
 import com.ecomarket.reportes.exception.ReporteException;
+import com.ecomarket.reportes.exception.ReporteNotFoundException;
 import com.ecomarket.reportes.repository.IndicadorKPIRepository;
 import com.ecomarket.reportes.repository.ReporteRepository;
 import com.ecomarket.reportes.service.ReporteService;
@@ -97,7 +98,7 @@ class MsReportesApplicationTests {
 
     @Test
     void testObtenerReporteInexistenteLanzaExcepcion() {
-        assertThrows(ReporteException.class, () -> {
+        assertThrows(ReporteNotFoundException.class, () -> {
             reporteService.obtenerReportePorId(999999L);
         });
     }

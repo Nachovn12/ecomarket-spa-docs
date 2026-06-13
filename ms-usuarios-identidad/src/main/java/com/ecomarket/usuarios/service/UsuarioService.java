@@ -9,6 +9,7 @@ import com.ecomarket.usuarios.model.Usuario;
 import com.ecomarket.usuarios.exception.UsuarioNoEncontradoException;
 import com.ecomarket.usuarios.exception.UsuarioYaExisteException;
 import com.ecomarket.usuarios.repository.UsuarioRepository;
+import com.ecomarket.usuarios.util.RutValidador;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,13 @@ public class UsuarioService {
     public UsuarioResponseDTO registrarCliente(UsuarioRequestDTO request) {
         String correoNormalizado = request.getCorreo().trim().toLowerCase();
 
+
+        if (request.getRun() != null && !request.getRun().isBlank()) {
+            String runNormalizado = RutValidador.normalizar(request.getRun());
+            RutValidador.validar(runNormalizado);
+            log.info("RUN validado correctamente: {}", runNormalizado);
+        }
+
         if (usuarioRepository.existsByCorreo(correoNormalizado)) {
             log.warn("Intento de registro con correo ya existente: {}", correoNormalizado);
             throw new UsuarioYaExisteException("Ya existe una cuenta registrada con este correo");
@@ -35,6 +43,7 @@ public class UsuarioService {
         Usuario usuario = Usuario.builder()
                 .nombre(request.getNombre().trim())
                 .correo(correoNormalizado)
+                .run(request.getRun() != null ? RutValidador.normalizar(request.getRun()) : null)
                 .password(request.getPassword())
                 .rol(Rol.CLIENTE)
                 .activo(true)

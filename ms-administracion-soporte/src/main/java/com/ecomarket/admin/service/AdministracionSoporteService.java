@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,9 +28,7 @@ public class AdministracionSoporteService {
     private final RespaldoDatosRepository respaldoDatosRepository;
     private final UsuarioInternoClientService usuarioInternoClientService;
 
-    // =========================================================================
-    // TIENDAS
-    // =========================================================================
+    // Tiendas
 
     public TiendaResponseDTO crearTienda(TiendaRequestDTO request) {
         validarHorarios(request.getHorarioApertura(), request.getHorarioCierre());
@@ -78,15 +77,13 @@ public class AdministracionSoporteService {
         return tiendas;
     }
 
-    // =========================================================================
-    // PERSONAL
-    // =========================================================================
+    // Personal
 
     public AsignacionPersonalResponseDTO asignarPersonal(AsignacionPersonalRequestDTO request) {
         Tienda tienda = obtenerTiendaPorId(request.getIdTienda());
 
-        // Comunicación con MS Usuarios e Identidad para validar que el usuario
-        // existe y es un usuario interno activo (IE 2.4.1)
+        // Comunicacion REST con MS usuarios e identidad para validar que el usuario
+        // Existe y es un usuario interno activo (IE 2.4.1)
         log.info("Validando usuario interno en MS Usuarios. idUsuarioInterno={}", request.getIdUsuarioInterno());
         usuarioInternoClientService.validarUsuarioInternoExiste(request.getIdUsuarioInterno());
 
@@ -117,9 +114,7 @@ public class AdministracionSoporteService {
         return personal;
     }
 
-    // =========================================================================
-    // TICKETS DE SOPORTE
-    // =========================================================================
+    // Tickets de soporte
 
     public TicketSoporteResponseDTO crearTicketSoporte(TicketSoporteRequestDTO request) {
         TicketSoporte ticket = TicketSoporte.builder()
@@ -161,8 +156,8 @@ public class AdministracionSoporteService {
         return mapearTicket(ticketSoporteRepository.save(ticket));
     }
 
-    public RespuestaSoporteResponseDTO responderTicket(RespuestaSoporteRequestDTO request) {
-        TicketSoporte ticket = obtenerTicketPorId(request.getIdTicket());
+    public RespuestaSoporteResponseDTO responderTicket(Long idTicket, RespuestaSoporteRequestDTO request) {
+        TicketSoporte ticket = obtenerTicketPorId(idTicket);
 
         RespuestaSoporte respuesta = RespuestaSoporte.builder()
                 .ticket(ticket)
@@ -175,7 +170,7 @@ public class AdministracionSoporteService {
             ticket.setEstado(EstadoTicket.EN_ATENCION);
             ticket.setFechaActualizacion(LocalDateTime.now());
             ticketSoporteRepository.save(ticket);
-            log.info("Ticket pasado a EN_ATENCION automáticamente. idTicket={}", ticket.getIdTicket());
+            log.info("Ticket pasado a EN_ATENCION automaticamente. idTicket={}", ticket.getIdTicket());
         }
 
         RespuestaSoporte respuestaGuardada = respuestaSoporteRepository.save(respuesta);
@@ -195,9 +190,7 @@ public class AdministracionSoporteService {
         return respuestas;
     }
 
-    // =========================================================================
-    // MONITORIZACIÓN — MÉTRICAS Y ALERTAS
-    // =========================================================================
+    // Metricas y alertas del sistema
 
     public MetricaSistemaResponseDTO registrarMetrica(MetricaSistemaRequestDTO request) {
         MetricaSistema metrica = MetricaSistema.builder()
@@ -209,7 +202,7 @@ public class AdministracionSoporteService {
                 .build();
 
         MetricaSistema metricaGuardada = metricaSistemaRepository.save(metrica);
-        log.info("Métrica registrada. microservicio={}, disponible={}, errores={}",
+        log.info("Metrica registrada. microservicio={}, disponible={}, errores={}",
                 request.getMicroservicio(), request.getDisponible(), request.getErroresDetectados());
 
         if (Boolean.FALSE.equals(request.getDisponible()) || request.getErroresDetectados() > 0) {
@@ -220,13 +213,13 @@ public class AdministracionSoporteService {
             AlertaSistema alerta = AlertaSistema.builder()
                     .microservicio(request.getMicroservicio().trim())
                     .tipoAlerta(tipoAlerta)
-                    .descripcion("Se detectó una condición de alerta en el microservicio " + request.getMicroservicio().trim())
+                    .descripcion("Se detecto una condicion de alerta en el microservicio " + request.getMicroservicio().trim())
                     .resuelta(false)
                     .fechaGeneracion(LocalDateTime.now())
                     .build();
 
             alertaSistemaRepository.save(alerta);
-            log.warn("Alerta generada automáticamente. microservicio={}, tipo={}", request.getMicroservicio(), tipoAlerta);
+            log.warn("Alerta generada automaticamente. microservicio={}, tipo={}", request.getMicroservicio(), tipoAlerta);
         }
 
         return mapearMetrica(metricaGuardada);
@@ -236,7 +229,7 @@ public class AdministracionSoporteService {
         List<MetricaSistemaResponseDTO> metricas = metricaSistemaRepository.findAll().stream()
                 .map(this::mapearMetrica)
                 .toList();
-        log.info("Listado de métricas. total={}", metricas.size());
+        log.info("Listado de metricas. total={}", metricas.size());
         return metricas;
     }
 
@@ -274,9 +267,7 @@ public class AdministracionSoporteService {
         return mapearAlerta(alertaSistemaRepository.save(alerta));
     }
 
-    // =========================================================================
-    // RESPALDOS
-    // =========================================================================
+    // Respaldos
 
     public RespaldoDatosResponseDTO programarRespaldo(RespaldoDatosRequestDTO request) {
         RespaldoDatos respaldo = RespaldoDatos.builder()
@@ -314,7 +305,7 @@ public class AdministracionSoporteService {
         }
 
         respaldo.setEstado("RESTAURADO");
-        respaldo.setResultado("Restauración ejecutada correctamente");
+        respaldo.setResultado("Restauracion ejecutada correctamente");
         respaldo.setFechaRestauracion(LocalDateTime.now());
 
         log.info("Respaldo restaurado. idRespaldo={}", idRespaldo);
@@ -329,9 +320,7 @@ public class AdministracionSoporteService {
         return respaldos;
     }
 
-    // =========================================================================
-    // Métodos privados de búsqueda — lanzan RecursoNoEncontradoException (404)
-    // =========================================================================
+    // Metodos privados de busqueda (lanzan 404)
 
     private Tienda obtenerTiendaPorId(Long idTienda) {
         return tiendaRepository.findById(idTienda)
@@ -348,7 +337,37 @@ public class AdministracionSoporteService {
                 .orElseThrow(() -> new RecursoNoEncontradoException("Respaldo no encontrado con id: " + idRespaldo));
     }
 
-    private void validarHorarios(java.time.LocalTime apertura, java.time.LocalTime cierre) {
+
+    @Transactional
+    public void eliminarTienda(Long idTienda) {
+        log.info("Eliminando tienda. idTienda={}", idTienda);
+        if (!tiendaRepository.existsById(idTienda)) {
+            throw new RecursoNoEncontradoException("Tienda no encontrada con id: " + idTienda);
+        }
+        tiendaRepository.deleteById(idTienda);
+        log.info("Tienda eliminada correctamente. idTienda={}", idTienda);
+    }
+
+        @Transactional
+    public void eliminarTicket(Long idTicket) {
+        log.info("Eliminando ticket. idTicket={}", idTicket);
+        if (!ticketSoporteRepository.existsById(idTicket)) {
+            throw new RecursoNoEncontradoException("Ticket no encontrado con id: " + idTicket);
+        }
+        ticketSoporteRepository.deleteById(idTicket);
+        log.info("Ticket eliminado correctamente. idTicket={}", idTicket);
+    }
+
+    @Transactional
+    public void eliminarRespaldo(Long idRespaldo) {
+        log.info("Eliminando respaldo. idRespaldo={}", idRespaldo);
+        RespaldoDatos respaldo = respaldoDatosRepository.findById(idRespaldo)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Respaldo no encontrado con id: " + idRespaldo));
+        respaldoDatosRepository.delete(respaldo);
+        log.info("Respaldo eliminado correctamente. idRespaldo={}", idRespaldo);
+    }
+
+        private void validarHorarios(java.time.LocalTime apertura, java.time.LocalTime cierre) {
         if (!apertura.isBefore(cierre)) {
             throw new IllegalArgumentException("El horario de apertura debe ser anterior al horario de cierre");
         }
@@ -358,9 +377,7 @@ public class AdministracionSoporteService {
         return texto == null || texto.isBlank() ? null : texto.trim();
     }
 
-    // =========================================================================
-    // Métodos privados de mapeo Model → DTO
-    // =========================================================================
+    // Mapeo model a DTO
 
     private TiendaResponseDTO mapearTienda(Tienda tienda) {
         return TiendaResponseDTO.builder()

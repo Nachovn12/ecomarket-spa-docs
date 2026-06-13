@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Configuración de RestTemplate para comunicación REST entre microservicios.
  * Incluye timeouts de conexión y lectura para evitar bloqueos de threads
- * si MS Usuarios e Identidad no responde.
+ * Si MS usuarios e identidad no responde.
  */
 @Configuration
 public class RestTemplateConfig {

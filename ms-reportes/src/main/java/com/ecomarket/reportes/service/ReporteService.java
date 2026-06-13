@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Servicio principal de Reportes y KPIs.
- * Genera reportes basados en los indicadores KPI almacenados en la BD local.
+ * Servicio principal de reportes y KPIs.
+ * Genera reportes basados en los indicadores kpi almacenados en la BD local.
  */
 @Service
 @Transactional
@@ -39,9 +39,7 @@ public class ReporteService {
         this.indicadorKPIRepository = indicadorKPIRepository;
     }
 
-    // =========================================================================
-    // REPORTES — CRUD
-    // =========================================================================
+    // Reportes — CRUD
 
     @Transactional(readOnly = true)
     public List<Reporte> listarReportes() {
@@ -84,9 +82,7 @@ public class ReporteService {
         return reporteRepository.findByIdTienda(idTienda);
     }
 
-    // =========================================================================
-    // GENERACIÓN DE REPORTES (datos desde KPIs almacenados en BD local)
-    // =========================================================================
+    // GENERACIÓN de reportes (datos desde KPIs almacenados en BD local)
 
     public ReporteVentasDTO generarReporteVentas(ReporteFiltroRequestDTO filtro) {
         validarRangoFechas(filtro);
@@ -170,9 +166,7 @@ public class ReporteService {
         return dto;
     }
 
-    // =========================================================================
     // KPIs — CRUD
-    // =========================================================================
 
     @Transactional(readOnly = true)
     public List<IndicadorKPI> listarKPIs() {
@@ -219,9 +213,7 @@ public class ReporteService {
         return dto;
     }
 
-    // =========================================================================
     // Validaciones privadas
-    // =========================================================================
 
     private void validarRangoFechas(ReporteFiltroRequestDTO filtro) {
         if (filtro.getFechaInicio() == null || filtro.getFechaFin() == null) {

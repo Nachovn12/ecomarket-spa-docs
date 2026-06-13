@@ -29,6 +29,26 @@ Componente tecnico de entrada para EcoMarket SPA. Centraliza el acceso REST haci
 - No reemplaza a los microservicios de dominio.
 - No almacena informacion del sistema.
 
+## Swagger / OpenAPI
+
+**El API Gateway NO expone Swagger ni OpenAPI** porque solo enruta peticiones
+hacia los microservicios; no implementa logica de negocio propia.
+
+La documentacion interactiva se debe consultar **directamente en cada MS**:
+
+| MS | Swagger UI | OpenAPI JSON |
+| --- | --- | --- |
+| ms-usuarios-identidad | http://localhost:8083/doc/swagger-ui.html | http://localhost:8083/api-docs |
+| ms-catalogo | http://localhost:8084/doc/swagger-ui.html | http://localhost:8084/api-docs |
+| ms-inventario-abastecimiento | http://localhost:8085/doc/swagger-ui.html | http://localhost:8085/api-docs |
+| ms-pedidos-ventas | http://localhost:8086/doc/swagger-ui.html | http://localhost:8086/api-docs |
+| ms-logistica-envios | http://localhost:8087/doc/swagger-ui.html | http://localhost:8087/api-docs |
+| ms-administracion-soporte | http://localhost:8088/doc/swagger-ui.html | http://localhost:8088/api-docs |
+| ms-reportes | http://localhost:8090/doc/swagger-ui.html | http://localhost:8090/api-docs |
+
+Intentar acceder a http://localhost:8081/doc/swagger-ui.html devuelve 404
+(Whitelabel Error Page) por diseno, no por error de configuracion.
+
 ## Tecnologias
 
 - Java 21
@@ -101,8 +121,8 @@ mvn -f api-gateway/pom.xml clean test
 | `/api/rutas/**` | MS Logistica de Envios | `http://localhost:8087` |
 | `/api/admin/**` | MS Administracion y Soporte | `http://localhost:8088` |
 | `/api/soporte/**` | MS Administracion y Soporte | `http://localhost:8088` |
-| `/api/v1/reportes/**` | MS Reportes | `http://localhost:8089` |
-| `/api/v1/kpis/**` | MS Reportes | `http://localhost:8089` |
+| `/api/v1/reportes/**` | MS Reportes                              | `http://localhost:8090` |
+| `/api/v1/kpis/**` | MS Reportes                              | `http://localhost:8090` |
 
 ## Ejemplos de uso
 

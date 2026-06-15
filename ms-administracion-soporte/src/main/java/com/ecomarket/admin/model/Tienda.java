@@ -63,5 +63,6 @@ public class Tienda {
     @OneToMany(mappedBy = "tienda")
     @JsonIgnore
     @Schema(hidden = true)
+    @Builder.Default
     private List<AsignacionPersonal> asignaciones = new ArrayList<>();
 }

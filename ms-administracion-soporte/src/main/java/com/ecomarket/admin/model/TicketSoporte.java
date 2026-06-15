@@ -64,5 +64,6 @@ public class TicketSoporte {
     @OneToMany(mappedBy = "ticket")
     @JsonIgnore
     @Schema(hidden = true)
+    @Builder.Default
     private List<RespuestaSoporte> respuestas = new ArrayList<>();
 }

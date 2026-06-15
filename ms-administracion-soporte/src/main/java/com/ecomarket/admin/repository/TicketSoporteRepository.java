@@ -1,7 +1,7 @@
 package com.ecomarket.admin.repository;
 
-import com.ecomarket.admin.entity.EstadoTicket;
-import com.ecomarket.admin.entity.TicketSoporte;
+import com.ecomarket.admin.model.EstadoTicket;
+import com.ecomarket.admin.model.TicketSoporte;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

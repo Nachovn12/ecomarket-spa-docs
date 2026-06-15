@@ -5,6 +5,13 @@ import com.ecomarket.usuarios.dto.PerfilClienteResponseDTO;
 import com.ecomarket.usuarios.dto.UsuarioRequestDTO;
 import com.ecomarket.usuarios.dto.UsuarioResponseDTO;
 import com.ecomarket.usuarios.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
@@ -17,10 +24,19 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 @RestController
 @RequestMapping("/api/usuarios")
 @RequiredArgsConstructor
+@Tag(name = "Usuarios (Clientes)", description = "Registro, perfil y actualizacion de clientes")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
+    @Operation(summary = "Registrar un nuevo cliente",
+            description = "Crea la cuenta de un cliente. Valida email y RUN unicos.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Cliente registrado",
+                    content = @Content(schema = @Schema(implementation = UsuarioResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Datos invalidos", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Email o RUN ya registrados", content = @Content)
+    })
     @PostMapping("/registro")
     public ResponseEntity<EntityModel<UsuarioResponseDTO>> registrarCliente(@Valid @RequestBody UsuarioRequestDTO request) {
         UsuarioResponseDTO response = usuarioService.registrarCliente(request);
@@ -31,8 +47,15 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(model);
     }
 
+    @Operation(summary = "Obtener el perfil de un cliente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Perfil del cliente",
+                    content = @Content(schema = @Schema(implementation = PerfilClienteResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado", content = @Content)
+    })
     @GetMapping("/clientes/{idCliente}/perfil")
-    public ResponseEntity<EntityModel<PerfilClienteResponseDTO>> obtenerPerfilCliente(@PathVariable Long idCliente) {
+    public ResponseEntity<EntityModel<PerfilClienteResponseDTO>> obtenerPerfilCliente(
+            @Parameter(description = "ID del cliente", example = "10", required = true) @PathVariable Long idCliente) {
         PerfilClienteResponseDTO response = usuarioService.obtenerPerfilCliente(idCliente);
 
         EntityModel<PerfilClienteResponseDTO> model = EntityModel.of(response,
@@ -42,9 +65,16 @@ public class UsuarioController {
         return ResponseEntity.ok(model);
     }
 
+    @Operation(summary = "Actualizar el perfil de un cliente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Perfil actualizado",
+                    content = @Content(schema = @Schema(implementation = PerfilClienteResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Datos invalidos", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado", content = @Content)
+    })
     @PutMapping("/clientes/{idCliente}/perfil")
     public ResponseEntity<EntityModel<PerfilClienteResponseDTO>> actualizarPerfilCliente(
-            @PathVariable Long idCliente,
+            @Parameter(description = "ID del cliente", example = "10", required = true) @PathVariable Long idCliente,
             @Valid @RequestBody ActualizarPerfilClienteRequestDTO request) {
 
         PerfilClienteResponseDTO response = usuarioService.actualizarPerfilCliente(idCliente, request);

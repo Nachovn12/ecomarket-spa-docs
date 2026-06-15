@@ -5,21 +5,30 @@ import com.ecomarket.reportes.dto.ReporteFiltroRequestDTO;
 import com.ecomarket.reportes.dto.ReporteInventarioDTO;
 import com.ecomarket.reportes.dto.ReporteRendimientoDTO;
 import com.ecomarket.reportes.dto.ReporteVentasDTO;
-import com.ecomarket.reportes.entity.IndicadorKPI;
-import com.ecomarket.reportes.entity.Reporte;
-import com.ecomarket.reportes.entity.TipoKPI;
-import com.ecomarket.reportes.entity.TipoReporte;
 import com.ecomarket.reportes.exception.ReporteException;
+import com.ecomarket.reportes.exception.ReporteNotFoundException;
+import com.ecomarket.reportes.model.IndicadorKPI;
+import com.ecomarket.reportes.model.Reporte;
+import com.ecomarket.reportes.model.TipoKPI;
+import com.ecomarket.reportes.model.TipoReporte;
 import com.ecomarket.reportes.repository.IndicadorKPIRepository;
 import com.ecomarket.reportes.repository.ReporteRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Servicio principal de reportes y KPIs.
+ * Genera reportes basados en los indicadores kpi almacenados en la BD local.
+ */
 @Service
 @Transactional
 public class ReporteService {
+
+    private static final Logger log = LoggerFactory.getLogger(ReporteService.class);
 
     private final ReporteRepository reporteRepository;
     private final IndicadorKPIRepository indicadorKPIRepository;
@@ -30,49 +39,55 @@ public class ReporteService {
         this.indicadorKPIRepository = indicadorKPIRepository;
     }
 
-    private void validarRangoFechas(ReporteFiltroRequestDTO filtro) {
-        if (filtro.getFechaInicio() == null || filtro.getFechaFin() == null) {
-            throw new ReporteException("Las fechas de inicio y fin son obligatorias");
-        }
-        if (filtro.getFechaInicio().isAfter(filtro.getFechaFin())) {
-            throw new ReporteException("La fecha de inicio no puede ser posterior a la fecha de fin");
-        }
-    }
+    // Reportes — CRUD
 
     @Transactional(readOnly = true)
     public List<Reporte> listarReportes() {
+        log.info("Listando todos los reportes");
         return reporteRepository.findAll();
     }
 
     @Transactional(readOnly = true)
     public Reporte obtenerReportePorId(Long id) {
+        log.info("Consultando reporte por ID: {}", id);
         return reporteRepository.findById(id)
-                .orElseThrow(() -> new ReporteException("Reporte no encontrado con id: " + id));
+                .orElseThrow(() -> new ReporteNotFoundException("Reporte no encontrado con id: " + id));
     }
 
     public Reporte crearReporte(Reporte reporte) {
-        return reporteRepository.save(reporte);
+        log.info("Creando reporte de tipo: {}", reporte.getTipo());
+        Reporte guardado = reporteRepository.save(reporte);
+        log.info("Reporte creado correctamente. id={}", guardado.getId());
+        return guardado;
     }
 
     public void eliminarReporte(Long id) {
+        log.info("Eliminando reporte. id={}", id);
         if (!reporteRepository.existsById(id)) {
-            throw new ReporteException("Reporte no encontrado con id: " + id);
+            throw new ReporteNotFoundException("Reporte no encontrado con id: " + id);
         }
         reporteRepository.deleteById(id);
+        log.info("Reporte eliminado correctamente. id={}", id);
     }
 
     @Transactional(readOnly = true)
     public List<Reporte> listarPorTipo(TipoReporte tipo) {
+        log.info("Listando reportes por tipo: {}", tipo);
         return reporteRepository.findByTipo(tipo);
     }
 
     @Transactional(readOnly = true)
     public List<Reporte> listarPorTienda(Long idTienda) {
+        log.info("Listando reportes por tienda. idTienda={}", idTienda);
         return reporteRepository.findByIdTienda(idTienda);
     }
 
+    // GENERACIÓN de reportes (datos desde KPIs almacenados en BD local)
+
     public ReporteVentasDTO generarReporteVentas(ReporteFiltroRequestDTO filtro) {
         validarRangoFechas(filtro);
+        log.info("Generando reporte de ventas. idTienda={}, desde={}, hasta={}",
+                filtro.getIdTienda(), filtro.getFechaInicio(), filtro.getFechaFin());
 
         Reporte reporte = new Reporte();
         reporte.setTipo(TipoReporte.VENTAS);
@@ -81,10 +96,6 @@ public class ReporteService {
         reporte.setFechaFin(filtro.getFechaFin());
         reporteRepository.save(reporte);
 
-        // Nota académica Sprint 4:
-        // Los cálculos se basan en datos internos de IndicadorKPI.
-        // La integración real con MS Ventas, MS Inventario y MS Administración
-        // queda representada de forma simulada para esta entrega.
         List<IndicadorKPI> kpisVentas = indicadorKPIRepository.findByTipo(TipoKPI.VENTAS_TOTALES);
         double totalVentas = kpisVentas.stream().mapToDouble(IndicadorKPI::getValor).sum();
 
@@ -95,18 +106,20 @@ public class ReporteService {
         dto.setVentasTotales(totalVentas);
         dto.setTotalTransacciones(kpisVentas.size());
         dto.setProductosVendidos(kpisVentas.size() * 5);
+
+        log.info("Reporte de ventas generado. ventasTotales={}, transacciones={}",
+                totalVentas, kpisVentas.size());
         return dto;
     }
 
     public ReporteInventarioDTO generarReporteInventario(Long idTienda) {
+        log.info("Generando reporte de inventario. idTienda={}", idTienda);
+
         Reporte reporte = new Reporte();
         reporte.setTipo(TipoReporte.INVENTARIO);
         reporte.setIdTienda(idTienda);
         reporteRepository.save(reporte);
 
-        // Nota académica Sprint 4:
-        // Los cálculos se basan en datos internos de IndicadorKPI.
-        // La integración real con MS Inventario queda simulada para esta entrega.
         List<IndicadorKPI> kpisBajoStock = indicadorKPIRepository.findByTipo(TipoKPI.STOCK_BAJO);
         List<IndicadorKPI> kpisRotacion = indicadorKPIRepository.findByTipo(TipoKPI.ROTACION_INVENTARIO);
 
@@ -115,11 +128,14 @@ public class ReporteService {
         dto.setProductosDisponibles(kpisRotacion.size() * 10);
         dto.setProductosBajoStock(kpisBajoStock.size());
         dto.setProductosSinStock(0);
+
+        log.info("Reporte de inventario generado. productosBajoStock={}", kpisBajoStock.size());
         return dto;
     }
 
     public ReporteRendimientoDTO generarReporteRendimiento(ReporteFiltroRequestDTO filtro) {
         validarRangoFechas(filtro);
+        log.info("Generando reporte de rendimiento. idTienda={}", filtro.getIdTienda());
 
         Reporte reporte = new Reporte();
         reporte.setTipo(TipoReporte.RENDIMIENTO_TIENDA);
@@ -128,9 +144,6 @@ public class ReporteService {
         reporte.setFechaFin(filtro.getFechaFin());
         reporteRepository.save(reporte);
 
-        // Nota académica Sprint 4:
-        // Los cálculos se basan en datos internos de IndicadorKPI.
-        // La integración real con MS Administración queda simulada para esta entrega.
         List<IndicadorKPI> kpisVentas = indicadorKPIRepository.findByTipo(TipoKPI.VENTAS_TOTALES);
         List<IndicadorKPI> kpisPedidos = indicadorKPIRepository.findByTipo(TipoKPI.PEDIDOS_ENTREGADOS);
         List<IndicadorKPI> kpisBajoStock = indicadorKPIRepository.findByTipo(TipoKPI.STOCK_BAJO);
@@ -147,33 +160,46 @@ public class ReporteService {
         dto.setPedidosEntregados(kpisPedidos.size());
         dto.setStockBajo(kpisBajoStock.size());
         dto.setRendimientoOperativo(rendimiento);
+
+        log.info("Reporte de rendimiento generado. idTienda={}, rendimiento={}",
+                filtro.getIdTienda(), rendimiento);
         return dto;
     }
 
+    // KPIs — CRUD
+
     @Transactional(readOnly = true)
     public List<IndicadorKPI> listarKPIs() {
+        log.info("Listando todos los KPIs");
         return indicadorKPIRepository.findAll();
     }
 
     @Transactional(readOnly = true)
     public IndicadorKPI obtenerKPIPorId(Long id) {
+        log.info("Consultando KPI por ID: {}", id);
         return indicadorKPIRepository.findById(id)
-                .orElseThrow(() -> new ReporteException("IndicadorKPI no encontrado con id: " + id));
+                .orElseThrow(() -> new ReporteNotFoundException("IndicadorKPI no encontrado con id: " + id));
     }
 
     public IndicadorKPI crearKPI(IndicadorKPI kpi) {
-        return indicadorKPIRepository.save(kpi);
+        log.info("Creando KPI de tipo: {}", kpi.getTipo());
+        IndicadorKPI guardado = indicadorKPIRepository.save(kpi);
+        log.info("KPI creado correctamente. id={}", guardado.getId());
+        return guardado;
     }
 
     public void eliminarKPI(Long id) {
+        log.info("Eliminando KPI. id={}", id);
         if (!indicadorKPIRepository.existsById(id)) {
-            throw new ReporteException("IndicadorKPI no encontrado con id: " + id);
+            throw new ReporteNotFoundException("IndicadorKPI no encontrado con id: " + id);
         }
         indicadorKPIRepository.deleteById(id);
+        log.info("KPI eliminado correctamente. id={}", id);
     }
 
     @Transactional(readOnly = true)
     public List<IndicadorKPI> listarKPIsPorTipo(TipoKPI tipo) {
+        log.info("Listando KPIs por tipo: {}", tipo);
         return indicadorKPIRepository.findByTipo(tipo);
     }
 
@@ -185,5 +211,16 @@ public class ReporteService {
         dto.setDescripcion(kpi.getDescripcion());
         dto.setFechaCalculo(kpi.getFechaCalculo());
         return dto;
+    }
+
+    // Validaciones privadas
+
+    private void validarRangoFechas(ReporteFiltroRequestDTO filtro) {
+        if (filtro.getFechaInicio() == null || filtro.getFechaFin() == null) {
+            throw new ReporteException("Las fechas de inicio y fin son obligatorias");
+        }
+        if (filtro.getFechaInicio().isAfter(filtro.getFechaFin())) {
+            throw new ReporteException("La fecha de inicio no puede ser posterior a la fecha de fin");
+        }
     }
 }

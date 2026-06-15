@@ -1,7 +1,7 @@
 package com.ecomarket.reportes.repository;
 
-import com.ecomarket.reportes.entity.Reporte;
-import com.ecomarket.reportes.entity.TipoReporte;
+import com.ecomarket.reportes.model.Reporte;
+import com.ecomarket.reportes.model.TipoReporte;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

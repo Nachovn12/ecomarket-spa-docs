@@ -10,6 +10,8 @@ import java.util.List;
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
     List<Producto> findByEstado(EstadoProducto estado);
 
+    boolean existsBySku(String sku);
+
     List<Producto> findByNombreContainingIgnoreCaseOrDescripcionContainingIgnoreCaseOrDescripcionEcologicaContainingIgnoreCase(
             String nombre,
             String descripcion,

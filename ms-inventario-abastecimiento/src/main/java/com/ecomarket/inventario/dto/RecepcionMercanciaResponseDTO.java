@@ -1,43 +1,42 @@
 package com.ecomarket.inventario.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalDateTime;
 
+/**
+ * DTO de salida para exponer datos de una recepcion de mercancia sin exponer la entidad JPA.
+ */
+@Getter
+@Setter
+@Schema(description = "Datos de salida de una recepcion de mercancia registrada")
 public class RecepcionMercanciaResponseDTO {
 
+    @Schema(description = "ID de la recepcion", example = "1")
     private Long id;
+
+    @Schema(description = "ID del pedido asociado", example = "1")
     private Long pedidoId;
+
+    @Schema(description = "Nombre del producto recibido", example = "Bolsa biodegradable mediana")
     private String nombreProducto;
+
+    @Schema(description = "Cantidad recibida en buen estado", example = "95")
     private Integer cantidadRecibida;
+
+    @Schema(description = "Cantidad recibida con dano", example = "5")
     private Integer cantidadDanada;
+
+    @Schema(description = "Observaciones de la recepcion", example = "Faltaron 5 unidades contra lo pedido")
     private String diferencias;
+
+    @Schema(description = "Estado de la recepcion", example = "PROCESADA", allowableValues = {"PENDIENTE", "PROCESADA", "CON_DIFERENCIAS"})
     private String estado;
+
+    @Schema(description = "Usuario que registro la recepcion", example = "recepcionista1")
     private String registradoPor;
+
+    @Schema(description = "Fecha y hora de la recepcion", example = "2026-06-08T14:30:00")
     private LocalDateTime fechaRecepcion;
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getPedidoId() { return pedidoId; }
-    public void setPedidoId(Long pedidoId) { this.pedidoId = pedidoId; }
-
-    public String getNombreProducto() { return nombreProducto; }
-    public void setNombreProducto(String nombreProducto) { this.nombreProducto = nombreProducto; }
-
-    public Integer getCantidadRecibida() { return cantidadRecibida; }
-    public void setCantidadRecibida(Integer cantidadRecibida) { this.cantidadRecibida = cantidadRecibida; }
-
-    public Integer getCantidadDanada() { return cantidadDanada; }
-    public void setCantidadDanada(Integer cantidadDanada) { this.cantidadDanada = cantidadDanada; }
-
-    public String getDiferencias() { return diferencias; }
-    public void setDiferencias(String diferencias) { this.diferencias = diferencias; }
-
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
-
-    public String getRegistradoPor() { return registradoPor; }
-    public void setRegistradoPor(String registradoPor) { this.registradoPor = registradoPor; }
-
-    public LocalDateTime getFechaRecepcion() { return fechaRecepcion; }
-    public void setFechaRecepcion(LocalDateTime fechaRecepcion) { this.fechaRecepcion = fechaRecepcion; }
 }

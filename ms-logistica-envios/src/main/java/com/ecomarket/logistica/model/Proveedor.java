@@ -1,48 +1,57 @@
 package com.ecomarket.logistica.model;
 
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "proveedores")
+@Getter
+@Setter
+@NoArgsConstructor
+@Schema(description = "Entidad JPA que representa un proveedor logistico (transporte/reparto)")
 public class Proveedor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "ID del proveedor", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
-    @NotBlank(message = "La razón social es obligatoria")
     @Column(nullable = false)
+    @Schema(description = "Razon social del proveedor", example = "Transportes Eco SpA", requiredMode = Schema.RequiredMode.REQUIRED)
     private String razonSocial;
 
-    @NotBlank(message = "El RUT es obligatorio")
     @Column(nullable = false, unique = true)
+    @Schema(description = "RUT unico del proveedor", example = "76.123.456-7", requiredMode = Schema.RequiredMode.REQUIRED)
     private String rut;
 
+    @Schema(description = "Persona de contacto", example = "Juan Perez")
     private String contacto;
 
-    @Email(message = "El email debe tener formato válido")
+    @Schema(description = "Email de contacto", example = "contacto@transporteseco.cl")
     private String email;
 
+    @Schema(description = "Telefono de contacto", example = "+56 2 2345 6789")
     private String telefono;
 
-    @NotBlank(message = "El tipo de proveedor es obligatorio")
     @Column(nullable = false)
+    @Schema(description = "Tipo de proveedor", example = "TRANSPORTE", allowableValues = {"TRANSPORTE", "REPARTO", "ALMACENAJE"}, requiredMode = Schema.RequiredMode.REQUIRED)
     private String tipoProveedor;
 
-    @NotBlank(message = "La cobertura es obligatoria")
     @Column(nullable = false)
+    @Schema(description = "Cobertura geografica", example = "REGIONAL", allowableValues = {"LOCAL", "REGIONAL", "NACIONAL"}, requiredMode = Schema.RequiredMode.REQUIRED)
     private String cobertura;
 
     @Column(nullable = false)
+    @Schema(description = "Indica si el proveedor esta activo", example = "true")
     private Boolean activo = true;
 
+    @Schema(description = "Fecha de registro del proveedor", example = "2026-01-15T10:00:00", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime fechaRegistro;
-
-    public Proveedor() {}
-
     @PrePersist
     protected void onCreate() {
         this.fechaRegistro = LocalDateTime.now();
@@ -50,25 +59,6 @@ public class Proveedor {
             this.activo = true;
         }
     }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getRazonSocial() { return razonSocial; }
-    public void setRazonSocial(String razonSocial) { this.razonSocial = razonSocial; }
-    public String getRut() { return rut; }
-    public void setRut(String rut) { this.rut = rut; }
-    public String getContacto() { return contacto; }
-    public void setContacto(String contacto) { this.contacto = contacto; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
-    public String getTipoProveedor() { return tipoProveedor; }
-    public void setTipoProveedor(String tipoProveedor) { this.tipoProveedor = tipoProveedor; }
-    public String getCobertura() { return cobertura; }
-    public void setCobertura(String cobertura) { this.cobertura = cobertura; }
-    public Boolean getActivo() { return activo; }
-    public void setActivo(Boolean activo) { this.activo = activo; }
-    public LocalDateTime getFechaRegistro() { return fechaRegistro; }
-    public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
+    @Schema(description = "Plazo de despacho del proveedor en horas", example = "24")
+    private Integer plazoDespachoHoras;
 }

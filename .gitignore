@@ -8,3 +8,4 @@ node_modules/
 *.class
 *.jar
 *.war
+logs-runtime/

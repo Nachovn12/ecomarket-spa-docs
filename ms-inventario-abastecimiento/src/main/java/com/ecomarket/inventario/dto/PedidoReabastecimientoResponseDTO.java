@@ -1,39 +1,39 @@
 package com.ecomarket.inventario.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalDateTime;
 
+/**
+ * DTO de salida para exponer datos de un pedido de reabastecimiento sin exponer la entidad JPA.
+ */
+@Getter
+@Setter
+@Schema(description = "Datos de salida de un pedido de reabastecimiento")
 public class PedidoReabastecimientoResponseDTO {
 
+    @Schema(description = "ID del pedido", example = "1")
     private Long id;
+
+    @Schema(description = "ID del producto solicitado", example = "5")
     private Long productoId;
+
+    @Schema(description = "Nombre del producto", example = "Bolsa biodegradable mediana")
     private String nombreProducto;
+
+    @Schema(description = "Cantidad solicitada", example = "100")
     private Integer cantidad;
+
+    @Schema(description = "Estado del pedido", example = "PENDIENTE", allowableValues = {"PENDIENTE", "APROBADO", "RECHAZADO", "EN_TRANSITO", "RECIBIDO"})
     private String estado;
+
+    @Schema(description = "Motivo del rechazo si aplica", example = "Stock suficiente")
     private String motivoRechazo;
+
+    @Schema(description = "Usuario que creo el pedido", example = "jefeBodega")
     private String creadoPor;
+
+    @Schema(description = "Fecha de creacion del pedido", example = "2026-06-01T10:00:00")
     private LocalDateTime fechaCreacion;
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getProductoId() { return productoId; }
-    public void setProductoId(Long productoId) { this.productoId = productoId; }
-
-    public String getNombreProducto() { return nombreProducto; }
-    public void setNombreProducto(String nombreProducto) { this.nombreProducto = nombreProducto; }
-
-    public Integer getCantidad() { return cantidad; }
-    public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
-
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
-
-    public String getMotivoRechazo() { return motivoRechazo; }
-    public void setMotivoRechazo(String motivoRechazo) { this.motivoRechazo = motivoRechazo; }
-
-    public String getCreadoPor() { return creadoPor; }
-    public void setCreadoPor(String creadoPor) { this.creadoPor = creadoPor; }
-
-    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
 }

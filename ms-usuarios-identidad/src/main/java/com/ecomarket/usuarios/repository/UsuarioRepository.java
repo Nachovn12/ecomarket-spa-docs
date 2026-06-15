@@ -1,6 +1,6 @@
 package com.ecomarket.usuarios.repository;
 
-import com.ecomarket.usuarios.entity.Usuario;
+import com.ecomarket.usuarios.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,21 +1,26 @@
 package com.ecomarket.reportes.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * DTO de salida para el reporte de inventario generado.
+ */
+@Getter
+@Setter
+@Schema(description = "Resultado del reporte de inventario de una tienda")
 public class ReporteInventarioDTO {
 
+    @Schema(description = "ID de la tienda consultada", example = "1")
     private Long idTienda;
+
+    @Schema(description = "Cantidad de productos disponibles", example = "85")
     private Integer productosDisponibles;
+
+    @Schema(description = "Cantidad de productos con stock bajo", example = "10")
     private Integer productosBajoStock;
+
+    @Schema(description = "Cantidad de productos sin stock", example = "3")
     private Integer productosSinStock;
-
-    public Long getIdTienda() { return idTienda; }
-    public void setIdTienda(Long idTienda) { this.idTienda = idTienda; }
-
-    public Integer getProductosDisponibles() { return productosDisponibles; }
-    public void setProductosDisponibles(Integer productosDisponibles) { this.productosDisponibles = productosDisponibles; }
-
-    public Integer getProductosBajoStock() { return productosBajoStock; }
-    public void setProductosBajoStock(Integer productosBajoStock) { this.productosBajoStock = productosBajoStock; }
-
-    public Integer getProductosSinStock() { return productosSinStock; }
-    public void setProductosSinStock(Integer productosSinStock) { this.productosSinStock = productosSinStock; }
 }

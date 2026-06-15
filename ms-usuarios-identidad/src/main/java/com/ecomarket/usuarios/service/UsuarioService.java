@@ -4,10 +4,12 @@ import com.ecomarket.usuarios.dto.ActualizarPerfilClienteRequestDTO;
 import com.ecomarket.usuarios.dto.PerfilClienteResponseDTO;
 import com.ecomarket.usuarios.dto.UsuarioRequestDTO;
 import com.ecomarket.usuarios.dto.UsuarioResponseDTO;
-import com.ecomarket.usuarios.entity.Usuario;
+import com.ecomarket.usuarios.model.Rol;
+import com.ecomarket.usuarios.model.Usuario;
 import com.ecomarket.usuarios.exception.UsuarioNoEncontradoException;
 import com.ecomarket.usuarios.exception.UsuarioYaExisteException;
 import com.ecomarket.usuarios.repository.UsuarioRepository;
+import com.ecomarket.usuarios.util.RutValidador;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,13 @@ public class UsuarioService {
     public UsuarioResponseDTO registrarCliente(UsuarioRequestDTO request) {
         String correoNormalizado = request.getCorreo().trim().toLowerCase();
 
+
+        if (request.getRun() != null && !request.getRun().isBlank()) {
+            String runNormalizado = RutValidador.normalizar(request.getRun());
+            RutValidador.validar(runNormalizado);
+            log.info("RUN validado correctamente: {}", runNormalizado);
+        }
+
         if (usuarioRepository.existsByCorreo(correoNormalizado)) {
             log.warn("Intento de registro con correo ya existente: {}", correoNormalizado);
             throw new UsuarioYaExisteException("Ya existe una cuenta registrada con este correo");
@@ -34,8 +43,9 @@ public class UsuarioService {
         Usuario usuario = Usuario.builder()
                 .nombre(request.getNombre().trim())
                 .correo(correoNormalizado)
+                .run(request.getRun() != null ? RutValidador.normalizar(request.getRun()) : null)
                 .password(request.getPassword())
-                .rol("CLIENTE")
+                .rol(Rol.CLIENTE)
                 .activo(true)
                 .eliminado(false)
                 .fechaRegistro(LocalDateTime.now())
@@ -101,7 +111,7 @@ public class UsuarioService {
             throw new UsuarioNoEncontradoException("Cliente no encontrado con id: " + idCliente);
         }
 
-        if (!"CLIENTE".equalsIgnoreCase(usuario.getRol())) {
+        if (!Rol.CLIENTE.equals(usuario.getRol())) {
             log.warn("Usuario consultado no corresponde a rol CLIENTE. idUsuario={}, rol={}", idCliente, usuario.getRol());
             throw new UsuarioNoEncontradoException("Cliente no encontrado con id: " + idCliente);
         }
@@ -114,7 +124,7 @@ public class UsuarioService {
                 .id(usuario.getId())
                 .nombre(usuario.getNombre())
                 .correo(usuario.getCorreo())
-                .rol(usuario.getRol())
+                .rol(usuario.getRol().name())
                 .activo(usuario.getActivo())
                 .fechaRegistro(usuario.getFechaRegistro())
                 .build();
@@ -128,7 +138,7 @@ public class UsuarioService {
                 .telefono(usuario.getTelefono())
                 .direccionEnvio(usuario.getDireccionEnvio())
                 .medioPago(usuario.getMedioPago())
-                .rol(usuario.getRol())
+                .rol(usuario.getRol().name())
                 .activo(usuario.getActivo())
                 .fechaRegistro(usuario.getFechaRegistro())
                 .build();

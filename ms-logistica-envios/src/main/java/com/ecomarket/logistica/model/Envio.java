@@ -1,55 +1,75 @@
 package com.ecomarket.logistica.model;
 
 import com.ecomarket.logistica.model.enums.EstadoEnvio;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.time.LocalDateTime;
 
+/**
+ * Entidad JPA de envio.
+ * Las validaciones de entrada se gestionan en enviodto y cambioestadorequestdto.
+ */
 @Entity
 @Table(name = "envios")
+@Getter
+@Setter
+@NoArgsConstructor
+@Schema(description = "Entidad JPA que representa un envio de un pedido a un cliente")
 public class Envio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "ID del envio", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
-    @NotNull(message = "El ID del pedido es obligatorio")
     @Column(nullable = false)
+    @Schema(description = "ID del pedido origen del envio", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long idPedido;
 
-    @NotBlank(message = "El origen es obligatorio")
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
+    @Schema(description = "Direccion de origen del envio", example = "Centro de distribucion Santiago", maxLength = 200, requiredMode = Schema.RequiredMode.REQUIRED)
     private String origen;
 
-    @NotBlank(message = "El destino es obligatorio")
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
+    @Schema(description = "Direccion de destino del envio", example = "Av. Siempre Viva 742, Santiago", maxLength = 200, requiredMode = Schema.RequiredMode.REQUIRED)
     private String destino;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
+    @Schema(description = "Estado del envio", example = "PREPARADO", allowableValues = {"PREPARADO", "EN_CAMINO", "ENTREGADO", "CON_INCIDENCIA"})
     private EstadoEnvio estado = EstadoEnvio.PREPARADO;
 
+    @Schema(description = "Ubicacion actual del envio", example = "Centro de distribucion Santiago")
     private String ubicacionActual;
+
+    @Schema(description = "Observaciones del envio", example = "Entregar entre 18:00 y 21:00")
     private String observacion;
+
+    @Schema(description = "Motivo de la ultima incidencia registrada", example = "Cliente no se encontraba en domicilio")
     private String motivoIncidencia;
 
-    private LocalDateTime fechaCreacion;
-
-    @NotNull(message = "La fecha estimada de entrega es obligatoria")
+    @Column(nullable = false)
+    @Schema(description = "Fecha estimada de entrega", example = "2026-06-20T18:00:00", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime fechaEstimadaEntrega;
 
+    @Schema(description = "Fecha de creacion del envio", example = "2026-06-15T10:00:00", accessMode = Schema.AccessMode.READ_ONLY)
+    private LocalDateTime fechaCreacion;
+
+    @Schema(description = "Fecha de ultima actualizacion", example = "2026-06-16T14:30:00", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime fechaActualizacion;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "proveedor_id")
+    @Schema(description = "Proveedor logistico asignado al envio")
     private Proveedor proveedor;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ruta_entrega_id")
+    @Schema(description = "Ruta de entrega asignada")
     private RutaEntrega rutaEntrega;
-
-    public Envio() {}
 
     @PrePersist
     protected void onCreate() {
@@ -64,31 +84,4 @@ public class Envio {
     protected void onUpdate() {
         this.fechaActualizacion = LocalDateTime.now();
     }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Long getIdPedido() { return idPedido; }
-    public void setIdPedido(Long idPedido) { this.idPedido = idPedido; }
-    public String getOrigen() { return origen; }
-    public void setOrigen(String origen) { this.origen = origen; }
-    public String getDestino() { return destino; }
-    public void setDestino(String destino) { this.destino = destino; }
-    public EstadoEnvio getEstado() { return estado; }
-    public void setEstado(EstadoEnvio estado) { this.estado = estado; }
-    public String getUbicacionActual() { return ubicacionActual; }
-    public void setUbicacionActual(String ubicacionActual) { this.ubicacionActual = ubicacionActual; }
-    public String getObservacion() { return observacion; }
-    public void setObservacion(String observacion) { this.observacion = observacion; }
-    public String getMotivoIncidencia() { return motivoIncidencia; }
-    public void setMotivoIncidencia(String motivoIncidencia) { this.motivoIncidencia = motivoIncidencia; }
-    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
-    public LocalDateTime getFechaEstimadaEntrega() { return fechaEstimadaEntrega; }
-    public void setFechaEstimadaEntrega(LocalDateTime fechaEstimadaEntrega) { this.fechaEstimadaEntrega = fechaEstimadaEntrega; }
-    public LocalDateTime getFechaActualizacion() { return fechaActualizacion; }
-    public void setFechaActualizacion(LocalDateTime fechaActualizacion) { this.fechaActualizacion = fechaActualizacion; }
-    public Proveedor getProveedor() { return proveedor; }
-    public void setProveedor(Proveedor proveedor) { this.proveedor = proveedor; }
-    public RutaEntrega getRutaEntrega() { return rutaEntrega; }
-    public void setRutaEntrega(RutaEntrega rutaEntrega) { this.rutaEntrega = rutaEntrega; }
 }

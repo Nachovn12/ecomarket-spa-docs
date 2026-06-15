@@ -3,18 +3,23 @@ package com.ecomarket.pedidos.service;
 import com.ecomarket.pedidos.dto.ActualizarCantidadRequest;
 import com.ecomarket.pedidos.dto.AgregarItemCarritoRequest;
 import com.ecomarket.pedidos.dto.AplicarCuponResponse;
-import com.ecomarket.pedidos.entity.CarritoCompra;
-import com.ecomarket.pedidos.entity.EstadoCarrito;
-import com.ecomarket.pedidos.entity.ItemCarrito;
+import com.ecomarket.pedidos.model.CarritoCompra;
+import com.ecomarket.pedidos.model.EstadoCarrito;
+import com.ecomarket.pedidos.model.ItemCarrito;
 import com.ecomarket.pedidos.repository.CarritoCompraRepository;
 import com.ecomarket.pedidos.repository.ItemCarritoRepository;
+import com.ecomarket.pedidos.exception.RecursoNoEncontradoException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import com.ecomarket.pedidos.dto.CarritoResponse;
+import com.ecomarket.pedidos.dto.ItemCarritoResponse;
 
 @Service
 public class CarritoService {
+
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CarritoService.class);
 
     private final CarritoCompraRepository carritoCompraRepository;
     private final ItemCarritoRepository itemCarritoRepository;
@@ -31,11 +36,14 @@ public class CarritoService {
     }
 
     public CarritoCompra crearCarrito(Long idCliente) {
+        log.info("Creando carrito para cliente. idCliente={}", idCliente);
         CarritoCompra carrito = new CarritoCompra();
         carrito.setIdCliente(idCliente);
         carrito.setEstado(EstadoCarrito.ACTIVO);
         carrito.recalcularTotales();
-        return carritoCompraRepository.save(carrito);
+        CarritoCompra guardado = carritoCompraRepository.save(carrito);
+        log.info("Carrito creado correctamente. idCarrito={}, idCliente={}", guardado.getIdCarrito(), idCliente);
+        return guardado;
     }
 
     public List<CarritoCompra> listarCarritos() {
@@ -44,7 +52,7 @@ public class CarritoService {
 
     public CarritoCompra obtenerCarrito(Long idCarrito) {
         return carritoCompraRepository.findById(idCarrito)
-                .orElseThrow(() -> new IllegalArgumentException("Carrito no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Carrito no encontrado con id: " + idCarrito));
     }
 
     @Transactional
@@ -136,5 +144,39 @@ public class CarritoService {
     private void limpiarCuponAplicado(CarritoCompra carrito) {
         carrito.setDescuentoAplicado(0.0);
         carrito.setCodigoCuponAplicado(null);
+    }
+
+
+    public CarritoResponse toResponse(CarritoCompra carrito) {
+        if (carrito == null) {
+            return null;
+        }
+        CarritoResponse r = new CarritoResponse();
+        r.setIdCarrito(carrito.getIdCarrito());
+        r.setIdCliente(carrito.getIdCliente());
+        r.setEstado(carrito.getEstado());
+        r.setSubtotal(carrito.getSubtotal());
+        r.setDescuentoAplicado(carrito.getDescuentoAplicado());
+        r.setTotal(carrito.getTotal());
+        r.setCodigoCuponAplicado(carrito.getCodigoCuponAplicado());
+        r.setFechaCreacion(carrito.getFechaCreacion());
+        r.setFechaActualizacion(carrito.getFechaActualizacion());
+        if (carrito.getItems() != null) {
+            r.setItems(carrito.getItems().stream()
+                    .map(this::toItemResponse)
+                    .toList());
+        }
+        return r;
+    }
+
+    public ItemCarritoResponse toItemResponse(ItemCarrito item) {
+        ItemCarritoResponse r = new ItemCarritoResponse();
+        r.setIdItem(item.getIdItem());
+        r.setIdProducto(item.getIdProducto());
+        r.setNombreProducto(item.getNombreProducto());
+        r.setCantidad(item.getCantidad());
+        r.setPrecioUnitario(item.getPrecioUnitario());
+        r.setSubtotal(item.getSubtotal());
+        return r;
     }
 }

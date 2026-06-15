@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,6 @@ public class Categoria {
     @Schema(description = "Identificador unico de la categoria", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long idCategoria;
 
-    @NotBlank
     @Column(nullable = false, unique = true)
     @Schema(description = "Nombre unico de la categoria", example = "Productos biodegradables", requiredMode = Schema.RequiredMode.REQUIRED)
     private String nombre;

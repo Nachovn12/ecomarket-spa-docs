@@ -6,8 +6,6 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,12 +21,10 @@ public class Proveedor {
     @Schema(description = "ID del proveedor", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
-    @NotBlank(message = "La razon social es obligatoria")
     @Column(nullable = false)
     @Schema(description = "Razon social del proveedor", example = "Transportes Eco SpA", requiredMode = Schema.RequiredMode.REQUIRED)
     private String razonSocial;
 
-    @NotBlank(message = "El RUT es obligatorio")
     @Column(nullable = false, unique = true)
     @Schema(description = "RUT unico del proveedor", example = "76.123.456-7", requiredMode = Schema.RequiredMode.REQUIRED)
     private String rut;
@@ -36,19 +32,16 @@ public class Proveedor {
     @Schema(description = "Persona de contacto", example = "Juan Perez")
     private String contacto;
 
-    @Email(message = "El email debe tener formato valido")
     @Schema(description = "Email de contacto", example = "contacto@transporteseco.cl")
     private String email;
 
     @Schema(description = "Telefono de contacto", example = "+56 2 2345 6789")
     private String telefono;
 
-    @NotBlank(message = "El tipo de proveedor es obligatorio")
     @Column(nullable = false)
     @Schema(description = "Tipo de proveedor", example = "TRANSPORTE", allowableValues = {"TRANSPORTE", "REPARTO", "ALMACENAJE"}, requiredMode = Schema.RequiredMode.REQUIRED)
     private String tipoProveedor;
 
-    @NotBlank(message = "La cobertura es obligatoria")
     @Column(nullable = false)
     @Schema(description = "Cobertura geografica", example = "REGIONAL", allowableValues = {"LOCAL", "REGIONAL", "NACIONAL"}, requiredMode = Schema.RequiredMode.REQUIRED)
     private String cobertura;

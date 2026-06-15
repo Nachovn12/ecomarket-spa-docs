@@ -6,9 +6,6 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,7 +21,6 @@ public class Resena {
     @Schema(description = "Identificador unico de la resena", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long idResena;
 
-    @NotNull
     @Schema(description = "ID del cliente que escribio la resena (referencia logica al MS Usuarios)", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long idCliente;
 
@@ -33,8 +29,6 @@ public class Resena {
     @Schema(description = "Producto al que pertenece la resena")
     private Producto producto;
 
-    @Min(1)
-    @Max(5)
     @Schema(description = "Calificacion de la resena entre 1 y 5", example = "5", minimum = "1", maximum = "5", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer calificacion;
 

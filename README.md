@@ -370,7 +370,7 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 | MS Pedidos y Ventas            |               8086 |
 | MS Logística de Envíos         |               8087 |
 | MS Administración y Soporte    |               8088 |
-| MS Reportes                    |               8089 |
+| MS Reportes                    |               8090 |
 
 Los puertos fueron configurados considerando la ejecución local y los equipos del instituto, donde algunos puertos comunes como `8080` y `8082` pueden estar ocupados por otros servicios.
 
@@ -570,7 +570,7 @@ Variables sugeridas en Postman:
 | `pedidos_url`    | `http://localhost:8086` |
 | `logistica_url`  | `http://localhost:8087` |
 | `admin_url`      | `http://localhost:8088` |
-| `reportes_url`   | `http://localhost:8089` |
+| `reportes_url`   | `http://localhost:8090` |
 
 ---
 

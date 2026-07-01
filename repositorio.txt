@@ -1,0 +1,34 @@
+===============================================================================
+ECOMARKET SPA — ECOSISTEMA DE REPOSITORIOS (ARQUITECTURA POLYREPO)
+===============================================================================
+
+REPOSITORIO PRINCIPAL (DOCUMENTACIÓN, EVIDENCIAS, PRUEBAS E2E Y README GENERAL):
+https://github.com/Nachovn12/ecomarket-spa-docs
+
+-------------------------------------------------------------------------------
+REPOSITORIOS DE MICROSERVICIOS Y GATEWAY (BACKEND JAVA / SPRING BOOT 3)
+-------------------------------------------------------------------------------
+
+1. API Gateway (puerto 8081):
+   https://github.com/Nachovn12/ecomarket-api-gateway
+
+2. MS Usuarios e Identidad (puerto 8083):
+   https://github.com/Nachovn12/ecomarket-ms-usuarios-identidad
+
+3. MS Catálogo (puerto 8084):
+   https://github.com/Nachovn12/ecomarket-ms-catalogo
+
+4. MS Inventario y Abastecimiento (puerto 8085):
+   https://github.com/Nachovn12/ecomarket-ms-inventario-abastecimiento
+
+5. MS Pedidos y Ventas (puerto 8086):
+   https://github.com/Nachovn12/ecomarket-ms-pedidos-ventas
+
+6. MS Logística de Envíos (puerto 8087):
+   https://github.com/Nachovn12/ecomarket-ms-logistica-envios
+
+7. MS Administración y Soporte (puerto 8088):
+   https://github.com/Nachovn12/ecomarket-ms-administracion-soporte
+
+8. MS Reportes y KPIs (puerto 8089):
+   https://github.com/Nachovn12/ecomarket-ms-reportes

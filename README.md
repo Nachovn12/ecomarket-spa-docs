@@ -134,10 +134,18 @@ git clone https://github.com/Nachovn12/ecomarket-ms-reportes.git
 El sistema utiliza el patrón *Database per Service*, por lo que cada microservicio se conecta de forma aislada a su propio esquema en MySQL en `localhost:3306`.
 
 **Instrucciones previas al encendido:**
-1. Abre el panel de control de **XAMPP** e inicia el módulo **MySQL**.
-2. **No es necesario crear las tablas ni escribir DDL manualmente:** Al iniciar cada microservicio, Spring Data JPA / Hibernate interceptará la conexión y generará automáticamente todas las tablas, relaciones y llaves foráneas gracias a la propiedad `spring.jpa.hibernate.ddl-auto=update` configurada en los archivos `application.properties`.
-3. Si lo prefieres, puedes verificar en tu phpMyAdmin que se crearán los siguientes esquemas tras el arranque:
-   `bd_usuarios`, `bd_catalogo`, `bd_inventario`, `bd_ventas`, `bd_logistica`, `bd_admin` y `bd_reportes`.
+1. Abre el panel de control de **XAMPP** e inicia el módulo **MySQL** (Puerto `3306`).
+2. **Crear los esquemas vacíos en MySQL:** Antes de arrancar los microservicios, abre tu phpMyAdmin (`http://localhost/phpmyadmin`) o consola MySQL y ejecuta este script para crear las 7 bases de datos vacías:
+   ```sql
+   CREATE DATABASE IF NOT EXISTS bd_usuarios;
+   CREATE DATABASE IF NOT EXISTS bd_catalogo;
+   CREATE DATABASE IF NOT EXISTS bd_inventario;
+   CREATE DATABASE IF NOT EXISTS bd_ventas;
+   CREATE DATABASE IF NOT EXISTS bd_logistica;
+   CREATE DATABASE IF NOT EXISTS bd_admin;
+   CREATE DATABASE IF NOT EXISTS bd_reportes;
+   ```
+3. **No es necesario crear las tablas ni escribir DDL manualmente:** Una vez creados los esquemas vacíos anteriores, al iniciar cada microservicio con `spring-boot:run`, Spring Data JPA / Hibernate se conectará y generará automáticamente todas las tablas, columnas, relaciones y llaves foráneas gracias a la propiedad `spring.jpa.hibernate.ddl-auto=update` configurada en cada proyecto.
 
 ---
 

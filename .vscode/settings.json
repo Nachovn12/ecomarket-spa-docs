@@ -1,0 +1,18 @@
+{
+    "java.home": "C:/Program Files/Java/jdk-25.0.3",
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-25",
+            "path": "C:/Program Files/Java/jdk-25.0.3",
+            "default": true
+        }
+    ],
+    "java.jdt.ls.vmargs": "-XX:+UseG1GC -XX:+UseStringDeduplication",
+    "java.compile.nullAnalysis.mode": "automatic",
+    "files.exclude": {
+        "**/target": false,
+        "**/.git": true
+    },
+    "explorer.excludeGitIgnore": false,
+    "java.project.explorer.showBuildOutput": true
+}

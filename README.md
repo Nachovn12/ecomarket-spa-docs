@@ -190,7 +190,7 @@ cd .\ecomarket-ms-logistica-envios\
 cd .\ecomarket-ms-administracion-soporte\
 .\mvnw.cmd spring-boot:run
 
-# Terminal 8: Reportes y KPIs (Puerto 8089)
+# Terminal 8: Reportes y KPIs (Puerto 8090)
 cd .\ecomarket-ms-reportes\
 .\mvnw.cmd spring-boot:run
 ```

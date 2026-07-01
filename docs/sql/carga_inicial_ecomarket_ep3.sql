@@ -110,7 +110,7 @@ INSERT IGNORE INTO tiendas (id_tienda, nombre, ciudad, horario_apertura, horario
 
 
 -- ----------------------------------------------------------------------------
--- 7. BASE DE DATOS: bd_reportes (MS Reportes y KPIs - Puerto 8089)
+-- 7. BASE DE DATOS: bd_reportes (MS Reportes y KPIs - Puerto 8090)
 -- ----------------------------------------------------------------------------
 CREATE DATABASE IF NOT EXISTS bd_reportes;
 USE bd_reportes;

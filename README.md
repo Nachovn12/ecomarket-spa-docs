@@ -96,7 +96,7 @@ El ecosistema se estructura alrededor de un API Gateway que expone los servicios
 
 Para ejecutar la demostración técnica en vivo durante la defensa, el entorno anfitrión debe contar con:
 1. **Java Development Kit (JDK 25):** Configurado en la variable de entorno `JAVA_HOME`.
-2. **Apache Maven:** Instalado y accesible desde la terminal (`mvn -version`).
+2. **Apache Maven:** Se utiliza el Maven Wrapper integrado (`.\mvnw.cmd`), por lo que no se requiere tener Maven en el PATH del sistema del instituto.
 3. **XAMPP / MySQL Server:** Servidor de base de datos relacional ejecutándose localmente en el puerto `3306`.
 4. **Git:** Para la clonación y navegación entre repositorios.
 5. **Postman:** Para importar y ejecutar la colección de pruebas E2E transversales.
@@ -146,10 +146,10 @@ El sistema utiliza el patrón *Database per Service*, por lo que cada microservi
 Para realizar la demostración en vivo durante la defensa técnica, sigue este orden estricto de arranque para garantizar el correcto enrutamiento:
 
 ### Paso 1: Levantar el API Gateway (Enrutador Central)
-Abre una terminal en la carpeta de `ecomarket-api-gateway` y arranca el servicio en el puerto `8081`:
+Abre una terminal en la carpeta principal del proyecto y arranca el Gateway en el puerto `8081`:
 ```powershell
-cd ecomarket-api-gateway
-mvn spring-boot:run
+cd .\ecomarket-api-gateway\
+.\mvnw.cmd spring-boot:run
 ```
 *(El Gateway quedará escuchando en `http://localhost:8081` listo para redirigir tráfico).*
 
@@ -158,32 +158,32 @@ En terminales separadas (o utilizando tu IDE como IntelliJ IDEA / Eclipse / VS C
 
 ```powershell
 # Terminal 2: Usuarios e Identidad (Puerto 8083)
-cd ecomarket-ms-usuarios-identidad
-mvn spring-boot:run
+cd .\ecomarket-ms-usuarios-identidad\
+.\mvnw.cmd spring-boot:run
 
 # Terminal 3: Catálogo (Puerto 8084)
-cd ecomarket-ms-catalogo
-mvn spring-boot:run
+cd .\ecomarket-ms-catalogo\
+.\mvnw.cmd spring-boot:run
 
 # Terminal 4: Inventario y Abastecimiento (Puerto 8085)
-cd ecomarket-ms-inventario-abastecimiento
-mvn spring-boot:run
+cd .\ecomarket-ms-inventario-abastecimiento\
+.\mvnw.cmd spring-boot:run
 
 # Terminal 5: Pedidos y Ventas (Puerto 8086)
-cd ecomarket-ms-pedidos-ventas
-mvn spring-boot:run
+cd .\ecomarket-ms-pedidos-ventas\
+.\mvnw.cmd spring-boot:run
 
 # Terminal 6: Logística de Envíos (Puerto 8087)
-cd ecomarket-ms-logistica-envios
-mvn spring-boot:run
+cd .\ecomarket-ms-logistica-envios\
+.\mvnw.cmd spring-boot:run
 
 # Terminal 7: Administración y Soporte (Puerto 8088)
-cd ecomarket-ms-administracion-soporte
-mvn spring-boot:run
+cd .\ecomarket-ms-administracion-soporte\
+.\mvnw.cmd spring-boot:run
 
 # Terminal 8: Reportes y KPIs (Puerto 8089)
-cd ecomarket-ms-reportes
-mvn spring-boot:run
+cd .\ecomarket-ms-reportes\
+.\mvnw.cmd spring-boot:run
 ```
 
 ### Paso 3: Verificación de Disponibilidad
@@ -205,64 +205,64 @@ Para verificar el 100% de cobertura en vivo en cada uno de los repositorios del 
 
 **1. API Gateway:**
 ```powershell
-cd ecomarket-api-gateway
-mvn clean test
+cd .\ecomarket-api-gateway\
+.\mvnw.cmd clean test
 cd ..
 ```
 *(El Gateway valida reglas de ruteo y puertos mediante Smoke Tests en `target/surefire-reports/`).*
 
 **2. MS Usuarios e Identidad:**
 ```powershell
-cd ecomarket-ms-usuarios-identidad
-mvn clean test jacoco:report
+cd .\ecomarket-ms-usuarios-identidad\
+.\mvnw.cmd clean test jacoco:report
 cd ..
 ```
 * **Ruta del reporte JaCoCo HTML:** `ecomarket-ms-usuarios-identidad/target/site/jacoco/index.html`
 
 **3. MS Catálogo:**
 ```powershell
-cd ecomarket-ms-catalogo
-mvn clean test jacoco:report
+cd .\ecomarket-ms-catalogo\
+.\mvnw.cmd clean test jacoco:report
 cd ..
 ```
 * **Ruta del reporte JaCoCo HTML:** `ecomarket-ms-catalogo/target/site/jacoco/index.html`
 
 **4. MS Inventario y Abastecimiento:**
 ```powershell
-cd ecomarket-ms-inventario-abastecimiento
-mvn clean test jacoco:report
+cd .\ecomarket-ms-inventario-abastecimiento\
+.\mvnw.cmd clean test jacoco:report
 cd ..
 ```
 * **Ruta del reporte JaCoCo HTML:** `ecomarket-ms-inventario-abastecimiento/target/site/jacoco/index.html`
 
 **5. MS Pedidos y Ventas:**
 ```powershell
-cd ecomarket-ms-pedidos-ventas
-mvn clean test jacoco:report
+cd .\ecomarket-ms-pedidos-ventas\
+.\mvnw.cmd clean test jacoco:report
 cd ..
 ```
 * **Ruta del reporte JaCoCo HTML:** `ecomarket-ms-pedidos-ventas/target/site/jacoco/index.html`
 
 **6. MS Logística de Envíos:**
 ```powershell
-cd ecomarket-ms-logistica-envios
-mvn clean test jacoco:report
+cd .\ecomarket-ms-logistica-envios\
+.\mvnw.cmd clean test jacoco:report
 cd ..
 ```
 * **Ruta del reporte JaCoCo HTML:** `ecomarket-ms-logistica-envios/target/site/jacoco/index.html`
 
 **7. MS Administración y Soporte:**
 ```powershell
-cd ecomarket-ms-administracion-soporte
-mvn clean test jacoco:report
+cd .\ecomarket-ms-administracion-soporte\
+.\mvnw.cmd clean test jacoco:report
 cd ..
 ```
 * **Ruta del reporte JaCoCo HTML:** `ecomarket-ms-administracion-soporte/target/site/jacoco/index.html`
 
 **8. MS Reportes y KPIs:**
 ```powershell
-cd ecomarket-ms-reportes
-mvn clean test jacoco:report
+cd .\ecomarket-ms-reportes\
+.\mvnw.cmd clean test jacoco:report
 cd ..
 ```
 * **Ruta del reporte JaCoCo HTML:** `ecomarket-ms-reportes/target/site/jacoco/index.html`

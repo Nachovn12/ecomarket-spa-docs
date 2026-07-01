@@ -146,6 +146,7 @@ El sistema utiliza el patrón *Database per Service*, por lo que cada microservi
    CREATE DATABASE IF NOT EXISTS bd_reportes;
    ```
 3. **No es necesario crear las tablas ni escribir DDL manualmente:** Una vez creados los esquemas vacíos anteriores, al iniciar cada microservicio con `spring-boot:run`, Spring Data JPA / Hibernate se conectará y generará automáticamente todas las tablas, columnas, relaciones y llaves foráneas gracias a la propiedad `spring.jpa.hibernate.ddl-auto=update` configurada en cada proyecto.
+4. **Carga Inicial de Datos del Ecosistema (Para pruebas E2E y Postman):** Una vez iniciados los microservicios por primera vez (con las tablas generadas automáticamente por JPA), abre tu phpMyAdmin (`http://localhost/phpmyadmin`), selecciona la pestaña superior **SQL** y ejecuta el archivo **`docs/sql/carga_inicial_ecomarket_ep3.sql`** adjunto en este repositorio. Con un solo clic, se poblarán las 7 bases de datos con los registros comerciales de EcoMarket SPA (usuarios, productos ecológicos, tiendas de Lastarria/Valdivia y stock), dejando la plataforma 100% operativa para la demostración de la colección Postman.
 
 ---
 

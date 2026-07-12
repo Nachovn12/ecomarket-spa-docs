@@ -1,4 +1,4 @@
-# EcoMarket SPA — EP3 Integración, Arquitectura Distribuida y Testing
+# EcoMarket SPA — Examen Final Transversal, Integración, Arquitectura Distribuida y Testing
 
 ## 1. Información del proyecto
 
@@ -9,7 +9,7 @@
 | Asignatura | Desarrollo Full Stack I — DSY1103 |
 | Sección | 003D |
 | Institución | Duoc UC |
-| Tipo de entrega | EP3 — Entrega de Encargo Grupal Parte 2 (Defensa Técnica) |
+| Tipo de entrega | Examen Final Transversal (EFT) — Proyecto Completo |
 | Tipo de trabajo | Grupal |
 | Arquitectura | Microservicios independientes con API Gateway (Spring Cloud Gateway) |
 | Persistencia | Patrón Database per Service (MySQL 8.x) |
@@ -146,7 +146,13 @@ El sistema utiliza el patrón *Database per Service*, por lo que cada microservi
    CREATE DATABASE IF NOT EXISTS bd_reportes;
    ```
 3. **No es necesario crear las tablas ni escribir DDL manualmente:** Una vez creados los esquemas vacíos anteriores, al iniciar cada microservicio con `spring-boot:run`, Spring Data JPA / Hibernate se conectará y generará automáticamente todas las tablas, columnas, relaciones y llaves foráneas gracias a la propiedad `spring.jpa.hibernate.ddl-auto=update` configurada en cada proyecto.
-4. **Carga Inicial de Datos del Ecosistema (Para pruebas E2E y Postman):** Una vez iniciados los microservicios por primera vez (con las tablas generadas automáticamente por JPA), abre tu phpMyAdmin (`http://localhost/phpmyadmin`), selecciona la pestaña superior **SQL** y ejecuta el archivo **`docs/sql/carga_inicial_ecomarket_ep3.sql`** adjunto en este repositorio. Con un solo clic, se poblarán las 7 bases de datos con los registros comerciales de EcoMarket SPA (usuarios, productos ecológicos, tiendas de Lastarria/Valdivia y stock), dejando la plataforma 100% operativa para la demostración de la colección Postman.
+4. **Semillado de Datos Mocks Coherentes (Ecosistema Completo):** Para que las pruebas de integración Postman y el flujo en vivo funcionen de inmediato sin errores por bases de datos vacías, ejecuta el script SQL maestro de semillado ubicado en:
+   * **Script SQL:** [`sql/seed_ecomarket_ecosystem.sql`](file:///c:/Users/Nacho/Documents/Proyectos%20-%20DUOC/DESARROLLO%20FULLSTACK%20I/ecomarket-polyrepo/ecomarket-spa-docs/sql/seed_ecomarket_ecosystem.sql)
+   * **Ejecución rápida en consola:**
+     ```powershell
+     cmd /c "C:\xampp\mysql\bin\mysql.exe -u root < sql\seed_ecomarket_ecosystem.sql"
+     ```
+     Este comando creará automáticamente las 7 bases de datos y sembrará todos los datos coherentes de usuarios (cliente Ignacio Valeria ID `2`), productos ecológicos, tiendas (Lastarria, Valdivia y Antofagasta), pedidos, envíos, facturas, KPIs y reportes.
 
 ---
 
@@ -339,7 +345,7 @@ La colección está encadenada dinámicamente: las respuestas de un request inye
 
 ---
 
-## 15. Documentación Entregable EP3
+## 15. Documentación Entregable del Examen Final Transversal (EFT)
 
 En el presente repositorio documental y dentro del directorio `docs/` se adjunta la totalidad del material arquitectónico y de auditoría para la revisión docente:
 
@@ -349,6 +355,7 @@ En el presente repositorio documental y dentro del directorio `docs/` se adjunta
 4. `docs/diagramas/arquitectura/diagrama-arquitectura-microservicios-ecomarket.png`: Diagrama de componentes del sistema.
 5. `docs/diagramas/despliegue/diagrama-despliegue-backend-ecomarket.png`: Diagrama de despliegue y redes.
 6. `postman/EcoMarket-E2E.postman_collection.json`: Suite de automatización E2E para la defensa.
+7. `sql/seed_ecomarket_ecosystem.sql`: Script SQL maestro de semillado y creación de las 7 bases de datos.
 
 ---
 

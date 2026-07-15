@@ -1,4 +1,4 @@
-﻿# PASO C — Anotaciones Swagger / OpenAPI en el codigo Java
+# PASO C — Anotaciones Swagger / OpenAPI en el codigo Java
 
 **Fecha:** 12-06-2026
 **Rama:** develop
@@ -14,9 +14,9 @@ usando el estandar de facto en el ecosistema Spring Boot: `springdoc-openapi-sta
 
 Una vez iniciado cada microservicio se puede consultar:
 
-- Swagger UI:   `http://localhost:<puerto>/swagger-ui.html`
-- OpenAPI JSON: `http://localhost:<puerto>/v3/api-docs`
-- OpenAPI YAML: `http://localhost:<puerto>/v3/api-docs.yaml`
+- Swagger UI:   `http://localhost:<puerto>/doc/swagger-ui.html`
+- OpenAPI JSON: `http://localhost:<puerto>/api-docs`
+- OpenAPI YAML: `http://localhost:<puerto>/api-docs.yaml`
 
 | Microservicio | Puerto |
 |---|---|
@@ -147,15 +147,15 @@ Sin errores de compilacion ni de tests en ningun microservicio.
    ```
 3. Abrir en el navegador:
    ```
-   http://localhost:8084/swagger-ui.html
+   http://localhost:8084/doc/swagger-ui.html
    ```
 4. Probar los endpoints directamente desde Swagger UI (boton "Try it out").
 
 Endpoints utiles para validar:
 
-- `GET /v3/api-docs` -> JSON OpenAPI puro.
-- `GET /v3/api-docs.yaml` -> YAML OpenAPI.
-- `GET /swagger-ui.html` -> UI interactiva.
+- `GET /api-docs` -> JSON OpenAPI puro.
+- `GET /api-docs.yaml` -> YAML OpenAPI.
+- `GET /doc/swagger-ui.html` -> UI interactiva.
 
 ---
 

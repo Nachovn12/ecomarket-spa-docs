@@ -79,14 +79,16 @@ El ecosistema se estructura alrededor de un API Gateway que expone los servicios
 | Categoría | Tecnología / Herramienta |
 | --- | --- |
 | Lenguaje de Programación | **Java 25** |
-| Framework Core | **Spring Boot 3.4.x** |
+| Framework Core | **Spring Boot 4.0.6** |
 | Enrutador / Gateway | **Spring Cloud Gateway (WebFlux)** |
 | Gestión de Dependencias | **Maven 3.9+** |
-| Persistencia y ORM | **Spring Data JPA / Hibernate** |
-| Motor Relacional | **MySQL 8.0+ / XAMPP** |
+| Persistencia y ORM | **Spring Data JPA / Hibernate 7.2.x** |
+| Motor Relacional | **MySQL 8.x / XAMPP** (Connector 9.7.x) |
 | Base de Datos en Memoria | **H2 Database** (Exclusiva para automatización de tests) |
 | Pruebas Unitarias | **JUnit 5 & Mockito** |
-| Auditoría de Cobertura | **JaCoCo Plugin** (Quality Gate logrado: **100%**) |
+| Auditoría de Cobertura | **JaCoCo Plugin 0.8.13** (Quality Gate logrado: **100%**) |
+| Documentación API | **Swagger UI / OpenAPI 3.0.2** |
+| Seguridad | **JSON Web Token (JJWT 0.12.6)** |
 | Pruebas de Integración (E2E) | **Postman & Postman CLI (Newman)** |
 | Control de Versiones | **Git & GitHub (Modelo Polyrepo)** |
 
@@ -100,6 +102,7 @@ Para ejecutar la demostración técnica en vivo durante la defensa, el entorno a
 3. **XAMPP / MySQL Server:** Servidor de base de datos relacional ejecutándose localmente en el puerto `3306`.
 4. **Git:** Para la clonación y navegación entre repositorios.
 5. **Postman:** Para importar y ejecutar la colección de pruebas E2E transversales.
+6. **Variable de entorno `JWT_SECRET`:** Requerida por todos los microservicios para firmar y validar tokens JWT (ver sección siguiente).
 
 ---
 
@@ -133,26 +136,16 @@ git clone https://github.com/Nachovn12/ecomarket-ms-reportes.git
 
 El sistema utiliza el patrón *Database per Service*, por lo que cada microservicio se conecta de forma aislada a su propio esquema en MySQL en `localhost:3306`.
 
-**Instrucciones previas al encendido:**
+**Instrucciones de Despliegue (Cero Configuración Manual):**
 1. Abre el panel de control de **XAMPP** e inicia el módulo **MySQL** (Puerto `3306`).
-2. **Crear los esquemas vacíos en MySQL:** Antes de arrancar los microservicios, abre tu phpMyAdmin (`http://localhost/phpmyadmin`) o consola MySQL y ejecuta este script para crear las 7 bases de datos vacías:
-   ```sql
-   CREATE DATABASE IF NOT EXISTS bd_usuarios;
-   CREATE DATABASE IF NOT EXISTS bd_catalogo;
-   CREATE DATABASE IF NOT EXISTS bd_inventario;
-   CREATE DATABASE IF NOT EXISTS bd_ventas;
-   CREATE DATABASE IF NOT EXISTS bd_logistica;
-   CREATE DATABASE IF NOT EXISTS bd_admin;
-   CREATE DATABASE IF NOT EXISTS bd_reportes;
-   ```
-3. **No es necesario crear las tablas ni escribir DDL manualmente:** Una vez creados los esquemas vacíos anteriores, al iniciar cada microservicio con `spring-boot:run`, Spring Data JPA / Hibernate se conectará y generará automáticamente todas las tablas, columnas, relaciones y llaves foráneas gracias a la propiedad `spring.jpa.hibernate.ddl-auto=update` configurada en cada proyecto.
-4. **Semillado de Datos Mocks Coherentes (Ecosistema Completo):** Para que las pruebas de integración Postman y el flujo en vivo funcionen de inmediato sin errores por bases de datos vacías, ejecuta el script SQL maestro de semillado ubicado en:
-   * **Script SQL:** [`sql/seed_ecomarket_ecosystem.sql`](file:///c:/Users/Nacho/Documents/Proyectos%20-%20DUOC/DESARROLLO%20FULLSTACK%20I/ecomarket-polyrepo/ecomarket-spa-docs/sql/seed_ecomarket_ecosystem.sql)
-   * **Ejecución rápida en consola:**
+2. **No es necesario crear bases de datos ni tablas manualmente:** Gracias a que la cadena de conexión de cada microservicio incluye el parámetro dinámico `?createDatabaseIfNotExist=true` y está configurado con `spring.jpa.hibernate.ddl-auto=update`, al iniciar cada microservicio con `spring-boot:run`, el sistema automáticamente creará el esquema correspondiente en MySQL y generará todas las tablas, columnas, relaciones y llaves foráneas.
+3. **Semillado de Datos Mocks Coherentes:** Una vez que todos los microservicios hayan sido iniciados por primera vez y hayan construido sus tablas, ejecuta el script SQL maestro de semillado para poblar el ecosistema y poder realizar pruebas E2E inmediatamente:
+   * **Script SQL:** [`sql/seed_ecomarket_ecosystem.sql`](sql/seed_ecomarket_ecosystem.sql)
+   * **Ejecución rápida en consola PowerShell:**
      ```powershell
      cmd /c "C:\xampp\mysql\bin\mysql.exe -u root < sql\seed_ecomarket_ecosystem.sql"
      ```
-     Este comando creará automáticamente las 7 bases de datos y sembrará todos los datos coherentes de usuarios (cliente Ignacio Valeria ID `2`), productos ecológicos, tiendas (Lastarria, Valdivia y Antofagasta), pedidos, envíos, facturas, KPIs y reportes.
+     Este comando insertará automáticamente en las 7 bases de datos todos los datos coherentes de usuarios (como el cliente Ignacio Valeria ID `2`), productos ecológicos, tiendas (Lastarria, Valdivia, Antofagasta), pedidos, envíos, facturas, KPIs y reportes.
 
 ---
 
@@ -309,13 +302,13 @@ Una vez iniciados los microservicios en sus respectivos terminales o IDE, puedes
 | Microservicio / Módulo | Puerto | URL de Swagger UI | Especificación OpenAPI (JSON) |
 | --- | :---: | --- | --- |
 | **API Gateway** | `8081` | *No aplica (Enrutador WebFlux)* | *Ruteo dinámico hacia APIs de dominio* |
-| **MS Usuarios e Identidad** | `8083` | [http://localhost:8083/swagger-ui.html](http://localhost:8083/swagger-ui.html) | `http://localhost:8083/v3/api-docs` |
-| **MS Catálogo** | `8084` | [http://localhost:8084/swagger-ui.html](http://localhost:8084/swagger-ui.html) | `http://localhost:8084/v3/api-docs` |
-| **MS Inventario y Abastecimiento** | `8085` | [http://localhost:8085/swagger-ui.html](http://localhost:8085/swagger-ui.html) | `http://localhost:8085/v3/api-docs` |
-| **MS Pedidos y Ventas** | `8086` | [http://localhost:8086/swagger-ui.html](http://localhost:8086/swagger-ui.html) | `http://localhost:8086/v3/api-docs` |
-| **MS Logística de Envíos** | `8087` | [http://localhost:8087/swagger-ui.html](http://localhost:8087/swagger-ui.html) | `http://localhost:8087/v3/api-docs` |
-| **MS Administración y Soporte** | `8088` | [http://localhost:8088/swagger-ui.html](http://localhost:8088/swagger-ui.html) | `http://localhost:8088/v3/api-docs` |
-| **MS Reportes y KPIs** | `8089` | [http://localhost:8089/swagger-ui.html](http://localhost:8089/swagger-ui.html) | `http://localhost:8089/v3/api-docs` |
+| **MS Usuarios e Identidad** | `8083` | [http://localhost:8083/doc/swagger-ui.html](http://localhost:8083/doc/swagger-ui.html) | `http://localhost:8083/api-docs` |
+| **MS Catálogo** | `8084` | [http://localhost:8084/doc/swagger-ui.html](http://localhost:8084/doc/swagger-ui.html) | `http://localhost:8084/api-docs` |
+| **MS Inventario y Abastecimiento** | `8085` | [http://localhost:8085/doc/swagger-ui.html](http://localhost:8085/doc/swagger-ui.html) | `http://localhost:8085/api-docs` |
+| **MS Pedidos y Ventas** | `8086` | [http://localhost:8086/doc/swagger-ui.html](http://localhost:8086/doc/swagger-ui.html) | `http://localhost:8086/api-docs` |
+| **MS Logística de Envíos** | `8087` | [http://localhost:8087/doc/swagger-ui.html](http://localhost:8087/doc/swagger-ui.html) | `http://localhost:8087/api-docs` |
+| **MS Administración y Soporte** | `8088` | [http://localhost:8088/doc/swagger-ui.html](http://localhost:8088/doc/swagger-ui.html) | `http://localhost:8088/api-docs` |
+| **MS Reportes y KPIs** | `8089` | [http://localhost:8089/doc/swagger-ui.html](http://localhost:8089/doc/swagger-ui.html) | `http://localhost:8089/api-docs` |
 
 > **Nota para la defensa:** A través de estas interfaces de Swagger UI se puede corroborar la documentación semántica de los controladores, incluyendo parámetros obligatorios, cabeceras de autorización JWT y esquemas de validación de los DTO de entrada y salida del comercio ecológico.
 
